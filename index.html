@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230063b3'/%3E%3Cellipse cx='32' cy='32' rx='20' ry='8.5' fill='none' stroke='white' stroke-width='4' transform='rotate(-24 32 32)'/%3E%3Ccircle cx='32' cy='32' r='7' fill='white'/%3E%3C/svg%3E" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
     <title>VNPT-NHS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -86,7 +86,8 @@
         padding: 30px 28px 26px;
       }
       .login-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-      .login-brand svg { flex: none; }
+      .login-brand img { flex: none; border-radius: 10px; display: block; }
+      .brand img { flex: none; border-radius: 7px; display: block; }
       .login-brand .name { font-size: 22px; font-weight: 800; letter-spacing: 0.2px; color: var(--blue-deep); }
       .login-sub { color: var(--muted); font-size: 13.5px; margin: 0 0 22px; }
       .field { margin-bottom: 14px; }
@@ -334,7 +335,7 @@
     <div class="login-wrap" id="loginView">
       <form class="login-card" id="loginForm" autocomplete="off">
         <div class="login-brand">
-          <svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0063b3"/><ellipse cx="32" cy="32" rx="20" ry="8.5" fill="none" stroke="white" stroke-width="4" transform="rotate(-24 32 32)"/><circle cx="32" cy="32" r="7" fill="white"/></svg>
+          <img src="assets/logo.png" width="40" height="40" alt="Logo VNPT" />
           <span class="name">VNPT-NHS</span>
         </div>
         <p class="login-sub">Tra cứu gói cước, KPI và phiếu lương dành cho nhân viên VNPT Ngũ Hành Sơn Đà Nẵng.</p>
@@ -359,7 +360,7 @@
       <header class="topbar">
         <div class="topbar-in">
           <div class="brand">
-            <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0063b3"/><ellipse cx="32" cy="32" rx="20" ry="8.5" fill="none" stroke="white" stroke-width="4" transform="rotate(-24 32 32)"/><circle cx="32" cy="32" r="7" fill="white"/></svg>
+            <img src="assets/logo.png" width="30" height="30" alt="Logo VNPT" />
             <span class="brand-text">
               <span class="brand-name">VNPT-NHS</span>
               <span class="brand-sub">Tra cứu gói cước, KPI và phiếu lương dành cho nhân viên VNPT Ngũ Hành Sơn Đà Nẵng.</span>
