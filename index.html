@@ -1,0 +1,1416 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230063b3'/%3E%3Cellipse cx='32' cy='32' rx='20' ry='8.5' fill='none' stroke='white' stroke-width='4' transform='rotate(-24 32 32)'/%3E%3Ccircle cx='32' cy='32' r='7' fill='white'/%3E%3C/svg%3E" />
+    <title>VNPT-NHS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #edf2f7;
+        --surface: #ffffff;
+        --surface-2: #f3f8fc;
+        --ink: #132a3f;
+        --muted: #5a7186;
+        --line: #d5e1ec;
+        --blue: #0063b3;
+        --blue-deep: #004a86;
+        --blue-soft: #e2eef8;
+        --sky: #00a0e3;
+        --good: #0d7a3e;
+        --good-bg: #e4f4ea;
+        --bad: #b3261e;
+        --bad-bg: #fbeae9;
+        --warn-bg: #fdf3e0;
+        --warn: #8a5a00;
+        --shadow: 0 10px 30px rgba(0, 55, 100, 0.12);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #081321;
+          --surface: #0f2033;
+          --surface-2: #152a42;
+          --ink: #e9f2f9;
+          --muted: #9db4c8;
+          --line: #26435f;
+          --blue: #3d9be0;
+          --blue-deep: #7cc0f2;
+          --blue-soft: #17334e;
+          --sky: #37b6f5;
+          --good: #4cc07a;
+          --good-bg: #12301f;
+          --bad: #ff8a80;
+          --bad-bg: #3a1a18;
+          --warn-bg: #33270e;
+          --warn: #f0c36d;
+          --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        font-family: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      button, input, select, textarea { font: inherit; color: inherit; }
+      button { cursor: pointer; }
+      :focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+
+      /* ---------- Login ---------- */
+      .login-wrap {
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+        background:
+          radial-gradient(900px 480px at 85% -10%, rgba(0, 160, 227, 0.28), transparent 60%),
+          radial-gradient(700px 420px at -10% 110%, rgba(0, 99, 179, 0.30), transparent 60%),
+          linear-gradient(160deg, #003a70 0%, #0063b3 55%, #0087d6 100%);
+      }
+      .login-card {
+        width: 100%;
+        max-width: 400px;
+        background: var(--surface);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        padding: 30px 28px 26px;
+      }
+      .login-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+      .login-brand svg { flex: none; }
+      .login-brand .name { font-size: 22px; font-weight: 800; letter-spacing: 0.2px; color: var(--blue-deep); }
+      .login-sub { color: var(--muted); font-size: 13.5px; margin: 0 0 22px; }
+      .field { margin-bottom: 14px; }
+      .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+      .field input, .field select {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--surface);
+      }
+      .field input:focus, .field select:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px var(--blue-soft); }
+      .pw-wrap { position: relative; }
+      .pw-wrap input { padding-right: 58px; }
+      .pw-toggle {
+        position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+        border: 0; background: transparent; color: var(--blue);
+        font-size: 13px; font-weight: 600; padding: 6px 8px; border-radius: 8px;
+      }
+      .pw-toggle:hover { background: var(--blue-soft); }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        border: 1px solid transparent; border-radius: 10px;
+        padding: 11px 18px; font-weight: 600; font-size: 14.5px;
+        background: var(--blue); color: #fff; text-decoration: none;
+        transition: background 0.15s ease, transform 0.1s ease;
+      }
+      .btn:hover { background: var(--blue-deep); }
+      .btn:active { transform: translateY(1px); }
+      .btn:disabled { opacity: 0.55; cursor: wait; }
+      .btn.block { width: 100%; }
+      .btn.ghost { background: transparent; color: var(--blue); border-color: var(--line); }
+      .btn.ghost:hover { background: var(--blue-soft); }
+      .btn.small { padding: 8px 13px; font-size: 13.5px; }
+      .msg { border-radius: 10px; padding: 11px 14px; font-size: 14px; margin: 12px 0; display: none; }
+      .msg.show { display: block; }
+      .msg.err { background: var(--bad-bg); color: var(--bad); }
+      .msg.ok { background: var(--good-bg); color: var(--good); }
+      .msg.warn { background: var(--warn-bg); color: var(--warn); }
+
+      /* ---------- App shell ---------- */
+      .topbar {
+        position: sticky; top: 0; z-index: 40;
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar-in {
+        max-width: 1240px; margin: 0 auto;
+        display: flex; align-items: center; gap: 14px;
+        padding: 10px 16px;
+      }
+      .brand { display: flex; align-items: center; gap: 9px; min-width: 0; }
+      .brand-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+      .brand-name { font-weight: 800; color: var(--blue-deep); font-size: 17px; white-space: nowrap; }
+      .brand-sub { font-size: 11px; font-weight: 500; color: var(--muted); }
+      .topnav { display: none; gap: 4px; margin-left: 10px; }
+      .topnav button, .bottomnav button {
+        border: 0; background: transparent; color: var(--muted);
+        font-weight: 600; font-size: 14px;
+        display: inline-flex; align-items: center; gap: 7px;
+      }
+      .topnav button { padding: 8px 13px; border-radius: 9px; }
+      .topnav button.active { background: var(--blue-soft); color: var(--blue-deep); }
+      .topnav button:hover { color: var(--blue-deep); }
+      .userbox { margin-left: auto; display: flex; align-items: center; gap: 10px; min-width: 0; }
+      .userbox .who { text-align: right; line-height: 1.25; min-width: 0; }
+      .userbox .who b { display: block; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .userbox .who span { font-size: 12px; color: var(--muted); }
+      .bottomnav {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+        background: var(--surface); border-top: 1px solid var(--line);
+        display: flex; padding-bottom: env(safe-area-inset-bottom);
+      }
+      .bottomnav button {
+        flex: 1; flex-direction: column; gap: 3px;
+        padding: 8px 2px 7px; font-size: 11.5px;
+      }
+      .bottomnav button.active { color: var(--blue); }
+      .bottomnav button svg { width: 22px; height: 22px; }
+      .topnav button svg { width: 18px; height: 18px; }
+
+      main { max-width: 1240px; margin: 0 auto; padding: 18px 16px 96px; }
+      .tabpage { display: none; }
+      .tabpage.active { display: block; }
+      .page-head { margin: 2px 0 16px; }
+      .page-head h1 { font-size: 21px; margin: 0 0 3px; font-weight: 800; }
+      .page-head p { margin: 0; color: var(--muted); font-size: 13.5px; }
+
+      /* ---------- Packages ---------- */
+      .pkg-layout { display: grid; gap: 16px; }
+      .filters {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); padding: 16px;
+        align-self: start;
+      }
+      .filters h2 { font-size: 14px; margin: 0 0 12px; font-weight: 700; }
+      .fgroup { margin-bottom: 16px; }
+      .fgroup:last-child { margin-bottom: 0; }
+      .fgroup > .flabel { display: block; font-size: 12.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; }
+      .searchbox { position: relative; }
+      .searchbox input {
+        width: 100%; padding: 11px 36px 11px 13px;
+        border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+      }
+      .searchbox input:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px var(--blue-soft); }
+      .searchbox .clear {
+        position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+        border: 0; background: transparent; color: var(--muted);
+        width: 28px; height: 28px; border-radius: 8px; font-size: 16px; line-height: 1; display: none;
+      }
+      .searchbox .clear.show { display: block; }
+      .seg { display: flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; }
+      .seg button { flex: 1; border: 0; background: transparent; padding: 7px 4px; border-radius: 7px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+      .seg button.active { background: var(--surface); color: var(--blue-deep); box-shadow: 0 1px 4px rgba(0, 55, 100, 0.15); }
+      .price-row { display: flex; align-items: center; gap: 8px; }
+      .price-row input { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+      .price-row span { color: var(--muted); font-size: 13px; white-space: nowrap; }
+      .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+      .chip {
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+        padding: 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 500;
+      }
+      .chip[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+      .filters select { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+      .result-count { font-size: 13.5px; color: var(--muted); margin: 0 0 12px; }
+      .result-count b { color: var(--ink); }
+      .pkg-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+      .pkg-card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px; text-align: left; width: 100%;
+        display: flex; flex-direction: column; gap: 8px;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+      .pkg-card:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+      .pkg-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+      .pkg-name { font-weight: 700; font-size: 15.5px; line-height: 1.35; }
+      .tag {
+        flex: none; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px;
+        background: var(--blue-soft); color: var(--blue-deep);
+      }
+      .tag.dn { background: var(--warn-bg); color: var(--warn); }
+      .pkg-price { font-size: 21px; font-weight: 800; color: var(--blue); }
+      .pkg-price small { font-size: 12.5px; font-weight: 500; color: var(--muted); }
+      .pkg-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+      .pkg-meta span { font-size: 12px; background: var(--surface-2); border: 1px solid var(--line); padding: 3px 8px; border-radius: 999px; color: var(--muted); }
+      .pkg-feats { margin: 0; padding-left: 17px; color: var(--muted); font-size: 13px; }
+      .pkg-feats li { margin: 1px 0; }
+      .empty {
+        background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius);
+        padding: 34px 20px; text-align: center; color: var(--muted);
+      }
+      .loading { text-align: center; color: var(--muted); padding: 34px 0; }
+
+      /* ---------- Modal ---------- */
+      .modal-back {
+        position: fixed; inset: 0; z-index: 60; background: rgba(4, 24, 44, 0.55);
+        display: none; align-items: flex-end; justify-content: center;
+      }
+      .modal-back.open { display: flex; }
+      .modal {
+        background: var(--surface); width: 100%; max-width: 640px; max-height: 88dvh; overflow: auto;
+        border-radius: 18px 18px 0 0; padding: 22px 20px 26px;
+      }
+      .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+      .modal-head h2 { margin: 0; font-size: 18px; line-height: 1.35; }
+      .modal-close { border: 0; background: var(--surface-2); width: 34px; height: 34px; border-radius: 9px; font-size: 17px; flex: none; }
+      .modal h3 { font-size: 14px; margin: 18px 0 8px; }
+      .cycle-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+      .cycle-table td, .cycle-table th { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+      .cycle-table td:last-child, .cycle-table th:last-child { text-align: right; font-weight: 600; }
+      .cycle-table tr:last-child td { border-bottom: 0; }
+      .modal ul.feats { margin: 0; padding-left: 18px; font-size: 14px; }
+      .modal ul.feats li { margin: 3px 0; }
+      .modal .note { background: var(--surface-2); border-radius: 10px; padding: 11px 13px; font-size: 13.5px; color: var(--muted); white-space: pre-wrap; }
+
+      /* ---------- KPI ---------- */
+      .card {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); padding: 18px;
+      }
+      .kpi-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+      .kpi-table th {
+        text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+        color: var(--muted); padding: 10px 12px; border-bottom: 2px solid var(--line);
+      }
+      .kpi-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      .kpi-table tr:last-child td { border-bottom: 0; }
+      .kpi-table td.num { text-align: center; font-weight: 700; white-space: nowrap; }
+      .kpi-table th.num { text-align: center; }
+      .kpi-table td.ref { color: var(--muted); font-size: 13px; white-space: pre-wrap; }
+      .kpi-foot { color: var(--muted); font-size: 13px; margin-top: 12px; }
+
+      /* ---------- Profile / salary ---------- */
+      .stack { display: grid; gap: 16px; }
+      .info-grid { display: grid; gap: 10px; grid-template-columns: 1fr; }
+      .info-item { background: var(--surface-2); border-radius: 10px; padding: 11px 13px; }
+      .info-item span { display: block; font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+      .info-item b { font-size: 15px; }
+      .salary-rows { display: grid; gap: 0; }
+      .salary-row { display: flex; justify-content: space-between; gap: 14px; padding: 10px 2px; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+      .salary-row:last-child { border-bottom: 0; }
+      .salary-row .v { font-weight: 600; white-space: nowrap; }
+      .salary-row.total .v, .salary-row.total span:first-child { font-weight: 800; }
+      .salary-row.net { background: var(--blue-soft); border-radius: 10px; padding: 12px 10px; margin-top: 8px; border-bottom: 0; }
+      .salary-row.net .v { color: var(--blue-deep); font-size: 17px; }
+      .salary-row.deduct .v { color: var(--bad); }
+      .two-col { display: grid; gap: 16px; grid-template-columns: 1fr; }
+
+      /* ---------- Desktop ---------- */
+      @media (min-width: 860px) {
+        .topnav { display: flex; }
+        .bottomnav { display: none; }
+        main { padding-bottom: 40px; }
+        .pkg-layout { grid-template-columns: 300px 1fr; }
+        .pkg-grid { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
+        .filters { position: sticky; top: 76px; }
+        .modal-back { align-items: center; padding: 20px; }
+        .modal { border-radius: 18px; }
+        .info-grid { grid-template-columns: repeat(3, 1fr); }
+        .two-col { grid-template-columns: 1fr 1fr; align-items: start; }
+        .page-head h1 { font-size: 24px; }
+      }
+      /* KPI table -> cards on phone */
+      @media (max-width: 640px) {
+        .kpi-table thead { display: none; }
+        .kpi-table, .kpi-table tbody, .kpi-table tr, .kpi-table td { display: block; width: 100%; }
+        .kpi-table tr { padding: 10px 2px; border-bottom: 1px solid var(--line); }
+        .kpi-table tr:last-child { border-bottom: 0; }
+        .kpi-table td { border-bottom: 0; padding: 3px 4px; }
+        .kpi-table td.ci { font-weight: 700; font-size: 15px; }
+        .kpi-table td.num { text-align: left; }
+        .kpi-table td.num::before { content: "Trọng số: "; color: var(--muted); font-weight: 500; }
+        .kpi-table td.dv::before { content: "Dịch vụ: "; color: var(--muted); font-weight: 600; }
+        .kpi-table td.ref::before { content: "Tham chiếu: "; color: var(--muted); font-weight: 600; display: block; }
+        .userbox .who { display: none; }
+        .brand-sub { font-size: 10.5px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============ LOGIN ============ -->
+    <div class="login-wrap" id="loginView">
+      <form class="login-card" id="loginForm" autocomplete="off">
+        <div class="login-brand">
+          <svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0063b3"/><ellipse cx="32" cy="32" rx="20" ry="8.5" fill="none" stroke="white" stroke-width="4" transform="rotate(-24 32 32)"/><circle cx="32" cy="32" r="7" fill="white"/></svg>
+          <span class="name">VNPT-NHS</span>
+        </div>
+        <p class="login-sub">Tra cứu gói cước, KPI và phiếu lương dành cho nhân viên VNPT Ngũ Hành Sơn Đà Nẵng.</p>
+        <div class="field">
+          <label for="hrmInput">Mã nhân viên (HRM)</label>
+          <input id="hrmInput" type="text" inputmode="text" autocapitalize="characters" placeholder="Ví dụ: DNG01234" required />
+        </div>
+        <div class="field">
+          <label for="pwInput">Mật khẩu</label>
+          <div class="pw-wrap">
+            <input id="pwInput" type="password" placeholder="Nhập mật khẩu" required />
+            <button class="pw-toggle" id="pwToggle" type="button" aria-label="Hiện hoặc ẩn mật khẩu">Hiện</button>
+          </div>
+        </div>
+        <div class="msg err" id="loginMsg" role="alert"></div>
+        <button class="btn block" type="submit" id="loginBtn">Đăng nhập</button>
+      </form>
+    </div>
+
+    <!-- ============ APP ============ -->
+    <div id="appView" hidden>
+      <header class="topbar">
+        <div class="topbar-in">
+          <div class="brand">
+            <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0063b3"/><ellipse cx="32" cy="32" rx="20" ry="8.5" fill="none" stroke="white" stroke-width="4" transform="rotate(-24 32 32)"/><circle cx="32" cy="32" r="7" fill="white"/></svg>
+            <span class="brand-text">
+              <span class="brand-name">VNPT-NHS</span>
+              <span class="brand-sub">Tra cứu gói cước, KPI và phiếu lương dành cho nhân viên VNPT Ngũ Hành Sơn Đà Nẵng.</span>
+            </span>
+          </div>
+          <nav class="topnav" id="topNav" aria-label="Điều hướng chính"></nav>
+          <div class="userbox">
+            <div class="who"><b id="whoName">—</b><span id="whoMeta">—</span></div>
+            <button class="btn ghost small" id="logoutBtn" type="button">Đăng xuất</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <!-- ===== Tab Gói cước ===== -->
+        <section class="tabpage" id="page-packages">
+          <div class="page-head">
+            <h1>Gói cước</h1>
+            <p>Tra cứu và tư vấn gói cước VNPT cho khách hàng.</p>
+          </div>
+          <div class="pkg-layout">
+            <aside class="filters" aria-label="Bộ lọc gói cước">
+              <h2>Tìm kiếm &amp; lọc</h2>
+              <div class="fgroup">
+                <span class="flabel">Từ khóa</span>
+                <div class="searchbox">
+                  <input id="qInput" type="search" placeholder="Tên gói, tốc độ, hoặc giá (vd: 250k)" />
+                  <button class="clear" id="qClear" type="button" aria-label="Xóa từ khóa">&times;</button>
+                </div>
+              </div>
+              <div class="fgroup">
+                <span class="flabel">Đối tượng</span>
+                <div class="seg" id="grpSeg">
+                  <button type="button" data-grp="all" class="active">Tất cả</button>
+                  <button type="button" data-grp="gd">Cá nhân</button>
+                  <button type="button" data-grp="dn">Doanh nghiệp</button>
+                </div>
+              </div>
+              <div class="fgroup">
+                <span class="flabel">Giá 1 tháng (nghìn đồng)</span>
+                <div class="price-row">
+                  <input id="priceFrom" type="number" min="0" inputmode="numeric" placeholder="Từ" />
+                  <span>—</span>
+                  <input id="priceTo" type="number" min="0" inputmode="numeric" placeholder="Đến" />
+                </div>
+              </div>
+              <div class="fgroup">
+                <span class="flabel">Tốc độ tối thiểu</span>
+                <div class="chips" id="speedChips">
+                  <button type="button" class="chip" data-speed="0" aria-pressed="true">Tất cả</button>
+                  <button type="button" class="chip" data-speed="300" aria-pressed="false">≥ 300M</button>
+                  <button type="button" class="chip" data-speed="500" aria-pressed="false">≥ 500M</button>
+                  <button type="button" class="chip" data-speed="1000" aria-pressed="false">≥ 1G</button>
+                </div>
+              </div>
+              <div class="fgroup">
+                <span class="flabel">Nhu cầu đi kèm</span>
+                <div class="chips" id="needChips">
+                  <button type="button" class="chip" data-need="has_tv" aria-pressed="false">Truyền hình</button>
+                  <button type="button" class="chip" data-need="has_cam" aria-pressed="false">Camera</button>
+                  <button type="button" class="chip" data-need="mesh" aria-pressed="false">Wifi Mesh</button>
+                  <button type="button" class="chip" data-need="has_mob" aria-pressed="false">Di động</button>
+                  <button type="button" class="chip" data-need="has_ipt" aria-pressed="false">IP tĩnh</button>
+                </div>
+              </div>
+              <div class="fgroup">
+                <span class="flabel">Sắp xếp</span>
+                <select id="sortSel">
+                  <option value="price-asc">Giá tăng dần</option>
+                  <option value="price-desc">Giá giảm dần</option>
+                  <option value="speed-desc">Tốc độ cao nhất</option>
+                  <option value="speed-asc">Tốc độ thấp nhất</option>
+                </select>
+              </div>
+              <div class="fgroup">
+                <button class="btn ghost block" id="resetFilters" type="button">Đặt lại bộ lọc</button>
+              </div>
+            </aside>
+            <div>
+              <p class="result-count" id="resultCount"></p>
+              <div id="pkgList"><div class="loading">Đang tải danh sách gói cước…</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Tab KPI ===== -->
+        <section class="tabpage" id="page-kpi">
+          <div class="page-head">
+            <h1>Khung KPI</h1>
+            <p id="kpiSub">Khung chỉ tiêu giao cá nhân theo chức danh.</p>
+          </div>
+          <div class="field" id="kpiAdminWrap" hidden style="max-width:360px">
+            <label for="kpiSel">Chọn chức danh (quản trị viên)</label>
+            <select id="kpiSel"></select>
+          </div>
+          <div id="kpiBody"><div class="loading">Đang tải khung KPI…</div></div>
+        </section>
+
+        <!-- ===== Tab Tôi ===== -->
+        <section class="tabpage" id="page-me">
+          <div class="page-head">
+            <h1>Thông tin của tôi</h1>
+            <p>Hồ sơ cá nhân, phiếu lương và bảo mật tài khoản.</p>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <div class="info-grid">
+                <div class="info-item"><span>Họ và tên</span><b id="meName">—</b></div>
+                <div class="info-item"><span>Mã nhân viên</span><b id="meHrm">—</b></div>
+                <div class="info-item"><span>Chức danh</span><b id="mePos">—</b></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2 style="margin:0 0 12px;font-size:16px">Phiếu lương của tôi</h2>
+              <div class="field" style="max-width:280px">
+                <label for="salarySel">Chọn tháng</label>
+                <select id="salarySel"></select>
+              </div>
+              <div id="salaryBody"><div class="loading">Đang tải phiếu lương…</div></div>
+            </div>
+
+            <div class="card">
+              <h2 style="margin:0 0 12px;font-size:16px">Đổi mật khẩu</h2>
+              <form id="pwForm" style="max-width:420px">
+                <div class="field">
+                  <label for="newPw">Mật khẩu mới</label>
+                  <input id="newPw" type="password" placeholder="Ít nhất 6 ký tự" required minlength="6" />
+                </div>
+                <div class="field">
+                  <label for="newPw2">Nhập lại mật khẩu mới</label>
+                  <input id="newPw2" type="password" placeholder="Nhập lại mật khẩu mới" required />
+                </div>
+                <div class="msg" id="pwMsg"></div>
+                <button class="btn" type="submit" id="pwBtn">Đổi mật khẩu</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Tab Quản trị ===== -->
+        <section class="tabpage" id="page-admin">
+          <div class="page-head">
+            <h1>Quản trị tài khoản</h1>
+            <p>Tạo tài khoản nhân viên mới và đặt lại mật khẩu.</p>
+          </div>
+          <div class="two-col">
+            <div class="card">
+              <h2 style="margin:0 0 14px;font-size:16px">Tạo tài khoản</h2>
+              <form id="createForm">
+                <div class="field">
+                  <label for="cHrm">Mã nhân viên (HRM)</label>
+                  <input id="cHrm" type="text" autocapitalize="characters" placeholder="Ví dụ: DNG01234" required />
+                </div>
+                <div class="field">
+                  <label for="cName">Họ và tên</label>
+                  <input id="cName" type="text" placeholder="Họ tên nhân viên" required />
+                </div>
+                <div class="field">
+                  <label for="cPw">Mật khẩu ban đầu</label>
+                  <input id="cPw" type="text" placeholder="Ít nhất 6 ký tự" required minlength="6" />
+                </div>
+                <div class="field">
+                  <label for="cRole">Phân quyền</label>
+                  <select id="cRole">
+                    <option value="staff">Nhân viên (staff)</option>
+                    <option value="admin">Quản trị viên (admin)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="cPos">Chức danh</label>
+                  <select id="cPos"></select>
+                </div>
+                <div class="msg" id="createMsg"></div>
+                <button class="btn block" type="submit" id="createBtn">Tạo tài khoản</button>
+              </form>
+            </div>
+            <div class="card">
+              <h2 style="margin:0 0 14px;font-size:16px">Reset mật khẩu</h2>
+              <form id="resetForm">
+                <div class="field">
+                  <label for="rHrm">Mã nhân viên (HRM)</label>
+                  <input id="rHrm" type="text" autocapitalize="characters" placeholder="Mã NV cần reset" required />
+                </div>
+                <div class="field">
+                  <label for="rPw">Mật khẩu mới</label>
+                  <input id="rPw" type="text" placeholder="Ít nhất 6 ký tự" required minlength="6" />
+                </div>
+                <div class="msg" id="resetMsg"></div>
+                <button class="btn block" type="submit" id="resetBtn">Reset mật khẩu</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <nav class="bottomnav" id="bottomNav" aria-label="Điều hướng chính"></nav>
+    </div>
+
+    <!-- ============ Package detail modal ============ -->
+    <div class="modal-back" id="modalBack">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-head">
+          <h2 id="modalTitle">Chi tiết gói</h2>
+          <button class="modal-close" id="modalClose" type="button" aria-label="Đóng">&times;</button>
+        </div>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+
+    <script>
+      "use strict";
+      /* ================= Kết nối máy chủ (Supabase REST, không thư viện ngoài) =================
+         App tự gọi REST API của Supabase bằng code thuần trong trang — không nạp
+         thư viện từ CDN nào cả, nên đăng nhập không còn chết khi CDN bị chặn.
+         Mỗi yêu cầu đi qua 2 đường truyền độc lập: fetch trước, lỗi kết nối thì
+         thử lại bằng XMLHttpRequest (một số trình duyệt nhúng/webview chặn fetch
+         tới tên miền lạ nhưng vẫn cho XHR đi qua, và ngược lại). */
+      var SUPABASE_URL = "https://nxzhopcvysmeurkzccde.supabase.co";
+      var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54emhvcGN2eXNtZXVya3pjY2RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MzgxNTIsImV4cCI6MjEwOTMxNDE1Mn0.379VzmaosijJ0MTq9mmr5f_Mr2vsqHGwW9RLJ4-SIB0";
+
+      /* Bộ lưu phiên an toàn: trình duyệt nhúng (webview/iframe) có thể chặn
+         localStorage — khi đó lùi về bộ nhớ tạm để đăng nhập vẫn chạy được
+         trong phiên hiện tại thay vì chết với lỗi khó hiểu */
+      var store = (function () {
+        try {
+          var probe = "__vnpt_probe__";
+          window.localStorage.setItem(probe, "1");
+          window.localStorage.removeItem(probe);
+          return window.localStorage;
+        } catch (e) {
+          var mem = {};
+          return {
+            getItem: function (k) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; },
+            setItem: function (k, v) { mem[k] = String(v); },
+            removeItem: function (k) { delete mem[k]; }
+          };
+        }
+      })();
+      var SESSION_KEY = "vnpt-nhs-session";
+      var session = null;
+      try {
+        var savedSession = store.getItem(SESSION_KEY);
+        if (savedSession) session = JSON.parse(savedSession);
+      } catch (e) { session = null; }
+      function saveSession() {
+        try {
+          if (session) store.setItem(SESSION_KEY, JSON.stringify(session));
+          else store.removeItem(SESSION_KEY);
+        } catch (e) { /* bộ nhớ tạm vẫn giữ phiên trong RAM */ }
+      }
+      function accessToken() { return session && session.access_token ? session.access_token : SUPABASE_ANON_KEY; }
+      function jwtPayload(token) {
+        try {
+          var part = String(token).split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+          while (part.length % 4) part += "=";
+          return JSON.parse(decodeURIComponent(escape(window.atob(part))));
+        } catch (e) { return {}; }
+      }
+      function sessionUser() {
+        if (!session || !session.access_token) return null;
+        var p = jwtPayload(session.access_token);
+        if (!p || !p.sub) return null;
+        return { id: p.sub, email: p.email || "" };
+      }
+
+      function netError(name, message) {
+        var e = new Error(message);
+        e.name = name;
+        e.isNet = true;
+        return e;
+      }
+      /* Đường truyền 1: fetch thường */
+      function fetchOnce(url, opts) {
+        var controller = null, timer = null;
+        var signal = undefined;
+        if (window.AbortController) {
+          controller = new AbortController();
+          signal = controller.signal;
+          timer = setTimeout(function () { try { controller.abort(); } catch (e) {} }, 20000);
+        }
+        var init = { method: opts.method || "GET", headers: opts.headers || {}, signal: signal };
+        if (opts.body != null) init.body = opts.body;
+        return fetch(url, init).then(function (r) {
+          if (timer) clearTimeout(timer);
+          return r.text().then(function (text) { return { status: r.status, text: text }; });
+        }, function (err) {
+          if (timer) clearTimeout(timer);
+          throw netError("FetchError", err && err.name ? String(err.name) + ": " + String(err.message || "") : "Failed to fetch");
+        });
+      }
+      /* Đường truyền 2: XMLHttpRequest — độc lập với fetch */
+      function xhrOnce(url, opts) {
+        return new Promise(function (resolve, reject) {
+          var xhr;
+          try { xhr = new XMLHttpRequest(); } catch (e) { reject(netError("XHRError", "XMLHttpRequest không khả dụng")); return; }
+          xhr.open(opts.method || "GET", url, true);
+          xhr.timeout = 20000;
+          var headers = opts.headers || {};
+          Object.keys(headers).forEach(function (k) { try { xhr.setRequestHeader(k, headers[k]); } catch (e) {} });
+          xhr.onload = function () { resolve({ status: xhr.status, text: xhr.responseText || "" }); };
+          xhr.onerror = function () { reject(netError("XHRError", "XHR error (status " + xhr.status + ")")); };
+          xhr.ontimeout = function () { reject(netError("XHRError", "XHR timeout")); };
+          xhr.onabort = function () { reject(netError("XHRError", "XHR abort")); };
+          try { xhr.send(opts.body != null ? opts.body : null); }
+          catch (e) { reject(netError("XHRError", String(e && e.message || e))); }
+        });
+      }
+      /* Gọi 1 API: fetch trước; nếu lỗi tầng kết nối thì thử lại bằng XHR.
+         Lỗi HTTP (4xx/5xx) là câu trả lời thật của máy chủ — trả về luôn,
+         không thử lại. Chỉ khi CẢ HAI đường đều lỗi kết nối mới báo lỗi mạng. */
+      function apiCall(url, opts) {
+        opts = opts || {};
+        return fetchOnce(url, opts).catch(function (firstErr) {
+          return xhrOnce(url, opts).catch(function (secondErr) {
+            var e = netError("NetworkError", "Cả 2 đường kết nối đều thất bại");
+            e.detail = "[" + (firstErr.name || "fetch") + "] " + (firstErr.message || "") +
+              " | [" + (secondErr.name || "xhr") + "] " + (secondErr.message || "");
+            throw e;
+          });
+        });
+      }
+      function parseJson(text) {
+        if (!text) return null;
+        try { return JSON.parse(text); } catch (e) { return null; }
+      }
+      function authHeaders() {
+        return { "apikey": SUPABASE_ANON_KEY, "Authorization": "Bearer " + accessToken() };
+      }
+      /* Đọc 1 bảng qua PostgREST. Trả { data } hoặc { error } giống trước. */
+      function restSelect(table, opts) {
+        opts = opts || {};
+        var params = ["select=" + encodeURIComponent(opts.select || "*")];
+        (opts.filters || []).forEach(function (f) {
+          params.push(encodeURIComponent(f.col) + "=eq." + encodeURIComponent(f.val));
+        });
+        if (opts.order) params.push("order=" + encodeURIComponent(opts.order.col) + "." + (opts.order.asc === false ? "desc" : "asc"));
+        if (opts.single) params.push("limit=1");
+        var headers = authHeaders();
+        if (opts.single) headers["Accept"] = "application/vnd.pgrst.object+json";
+        return apiCall(SUPABASE_URL + "/rest/v1/" + table + "?" + params.join("&"), { headers: headers }).then(function (r) {
+          var data = parseJson(r.text);
+          if (r.status >= 200 && r.status < 300) {
+            return { data: opts.single ? data : (Array.isArray(data) ? data : []), error: null };
+          }
+          return { data: null, error: {
+            name: "PostgrestError", status: r.status,
+            code: (data && data.code) || "",
+            message: (data && (data.message || data.error)) || ("Máy chủ trả lỗi " + r.status)
+          } };
+        }).catch(function (err) {
+          return { data: null, error: err };
+        });
+      }
+      /* Làm mới access token bằng refresh token; hỏng thì xoá phiên */
+      var refreshPromise = null;
+      function refreshSession() {
+        if (!session || !session.refresh_token) return Promise.resolve(false);
+        if (refreshPromise) return refreshPromise;
+        var headers = { "apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json" };
+        refreshPromise = apiCall(SUPABASE_URL + "/auth/v1/token?grant_type=refresh_token", {
+          method: "POST", headers: headers,
+          body: JSON.stringify({ refresh_token: session.refresh_token })
+        }).then(function (r) {
+          refreshPromise = null;
+          var data = parseJson(r.text);
+          if (r.status >= 200 && r.status < 300 && data && data.access_token) {
+            session = data;
+            saveSession();
+            return true;
+          }
+          session = null;
+          saveSession();
+          return false;
+        }).catch(function () { refreshPromise = null; return false; });
+        return refreshPromise;
+      }
+      /* Phiên còn dùng được không; sắp hết hạn (còn < 60s) thì làm mới trước */
+      function ensureSession() {
+        if (!session || !session.access_token) return Promise.resolve(false);
+        var p = jwtPayload(session.access_token);
+        var remain = (Number(p.exp) || 0) - Math.floor(Date.now() / 1000);
+        if (remain > 60) return Promise.resolve(true);
+        return refreshSession();
+      }
+      /* Đăng xuất phía máy chủ (best effort) rồi xoá phiên cục bộ */
+      function signOutRemote() {
+        if (!session || !session.access_token) { session = null; saveSession(); return Promise.resolve(); }
+        var headers = authHeaders();
+        headers["Content-Type"] = "application/json";
+        var done = function () { session = null; saveSession(); };
+        return apiCall(SUPABASE_URL + "/auth/v1/logout", { method: "POST", headers: headers }).then(done, done);
+      }
+
+      var POSITIONS = [
+        "NVKD địa bàn",
+        "NVKT địa bàn",
+        "Giao dịch viên, Cửa hàng trưởng",
+        "NV Quản lý kênh",
+        "AM (VNPT khu vực)"
+      ];
+
+      var ICONS = {
+        packages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 15.5a5.5 5.5 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg>',
+        kpi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>',
+        me: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>',
+        admin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><path d="M9.5 12l2 2 3.5-4"/></svg>'
+      };
+
+      var state = {
+        user: null,
+        profile: null,
+        packages: [],
+        packagesLoaded: false,
+        kpiFrames: [],
+        kpiLoaded: false,
+        salaries: [],
+        salariesLoaded: false,
+        filters: { q: "", grp: "all", from: null, to: null, speed: 0, needs: {}, sort: "price-asc" },
+        activeTab: "packages"
+      };
+
+      /* ================= Helpers ================= */
+      function $(id) { return document.getElementById(id); }
+      function esc(s) {
+        return String(s == null ? "" : s)
+          .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+      }
+      function fmtVND(n) {
+        if (n == null || isNaN(Number(n))) return "—";
+        return Number(n).toLocaleString("vi-VN") + "đ";
+      }
+      function stripAccents(s) {
+        return String(s || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/đ/g, "d").replace(/Đ/g, "D")
+          .toLowerCase();
+      }
+      function showMsg(el, text, kind) {
+        el.textContent = text;
+        el.className = "msg show " + (kind || "err");
+      }
+      function hideMsg(el) { el.className = "msg"; el.textContent = ""; }
+      function monthLabel(ym) {
+        if (!ym) return "—";
+        var p = String(ym).split("-");
+        if (p.length < 2) return ym;
+        return "Tháng " + Number(p[1]) + "/" + p[0];
+      }
+
+      /* ================= Auth ================= */
+      /* Dịch từng mã lỗi của máy chủ đăng nhập thành thông báo đúng nguyên nhân,
+         thay vì mọi lỗi đều báo chung là sai mật khẩu */
+      function loginErrorText(err) {
+        var code = err && err.code ? String(err.code) : "";
+        var status = err && err.status ? Number(err.status) : 0;
+        var name = err && err.name ? String(err.name) : "";
+        var message = err && err.message ? String(err.message) : "";
+        if (code === "email_not_confirmed") {
+          return "Tài khoản chưa được kích hoạt (email chưa xác thực). Vui lòng liên hệ quản trị viên để được kích hoạt tài khoản.";
+        }
+        if (code === "user_banned") {
+          return "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.";
+        }
+        if (code === "over_request_rate_limit" || status === 429) {
+          return "Bạn đã thử đăng nhập quá nhiều lần liên tiếp. Vui lòng đợi ít phút rồi thử lại.";
+        }
+        if ((err && err.isNet) || name === "AuthRetryableFetchError" || /fetch|network|load failed/i.test(message)) {
+          return "Không kết nối được máy chủ đăng nhập. Vui lòng kiểm tra mạng (thử đổi sang 4G hoặc wifi khác) và thử lại." + errDetail(err);
+        }
+        if (code === "invalid_credentials" || /invalid login credentials/i.test(message)) {
+          return "Đăng nhập thất bại: mã nhân viên hoặc mật khẩu không đúng. Vui lòng kiểm tra lại (mật khẩu phân biệt chữ hoa/thường; bấm nút Hiện để xem mật khẩu đã nhập).";
+        }
+        return "Đăng nhập thất bại" + (message ? ": " + message : "") + ". Vui lòng thử lại hoặc liên hệ quản trị viên.";
+      }
+
+      /* Nhận diện lỗi tầng kết nối (cả 2 đường truyền đều không tới được
+         máy chủ: mất mạng, webview chặn kết nối...) */
+      function isNetErr(err) {
+        if (!err) return false;
+        if (err.isNet) return true;
+        var name = err.name ? String(err.name) : "";
+        var message = err.message ? String(err.message) : "";
+        return name === "AuthRetryableFetchError" || /fetch|network|load failed/i.test(message);
+      }
+      /* Chi tiết kỹ thuật gọn kèm theo thông báo lỗi mạng, để khi người dùng
+         chụp màn hình gửi lại thì chẩn đoán được đúng nguyên nhân */
+      function errDetail(err) {
+        if (!err) return "";
+        var bits = [];
+        if (err.name) bits.push(String(err.name));
+        if (err.message) bits.push(String(err.message));
+        if (err.detail) bits.push(String(err.detail));
+        if (err.status) bits.push("HTTP " + err.status);
+        if (err.code) bits.push(String(err.code));
+        return bits.length ? " (Chi tiết: " + bits.join(" · ") + ")" : "";
+      }
+      function showNetError(el, err) {
+        showMsg(el, "Không kết nối được máy chủ đăng nhập. Vui lòng kiểm tra mạng (thử đổi sang 4G hoặc wifi khác) rồi bấm Đăng nhập lại." + errDetail(err));
+      }
+      /* Đăng nhập: POST thẳng tới Auth API qua apiCall (fetch, lỗi kết nối thì
+         XHR). Thành công thì lưu phiên vào bộ nhớ an toàn của trang. */
+      function signIn(email, password) {
+        var headers = { "apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json" };
+        return apiCall(SUPABASE_URL + "/auth/v1/token?grant_type=password", {
+          method: "POST", headers: headers,
+          body: JSON.stringify({ email: email, password: password })
+        }).then(function (r) {
+          var data = parseJson(r.text) || {};
+          if (r.status >= 200 && r.status < 300 && data.access_token && data.refresh_token) {
+            session = data;
+            saveSession();
+            return { ok: true };
+          }
+          return { ok: false, error: {
+            name: "AuthApiError",
+            status: r.status,
+            code: data.code || data.error || "",
+            message: data.msg || data.error_description || data.message || ("Máy chủ trả lỗi " + r.status)
+          } };
+        }).catch(function (err) {
+          return { ok: false, netErr: true, error: err };
+        });
+      }
+
+      $("pwToggle").addEventListener("click", function () {
+        var inp = $("pwInput");
+        var show = inp.type === "password";
+        inp.type = show ? "text" : "password";
+        this.textContent = show ? "Ẩn" : "Hiện";
+        inp.focus();
+      });
+
+      $("loginForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        /* Chuẩn hoá dữ liệu dán từ tin nhắn: bỏ khoảng trắng thừa trong mã NV
+           và khoảng trắng/xuống dòng dính ở hai đầu mật khẩu khi copy */
+        var hrm = $("hrmInput").value.trim().replace(/\s+/g, "");
+        var pw = $("pwInput").value.trim();
+        var msg = $("loginMsg");
+        hideMsg(msg);
+        if (!hrm || !pw) { showMsg(msg, "Vui lòng nhập đầy đủ mã nhân viên và mật khẩu."); return; }
+        var btn = $("loginBtn");
+        btn.disabled = true; btn.textContent = "Đang đăng nhập…";
+        var email = hrm.toLowerCase() + "@vnpt.local";
+        signIn(email, pw).then(function (d) {
+          btn.disabled = false; btn.textContent = "Đăng nhập";
+          if (d.ok) { bootApp(); return; }
+          if (d.netErr) { showNetError(msg, d.error); return; }
+          showMsg(msg, loginErrorText(d.error));
+        }).catch(function (err) {
+          btn.disabled = false; btn.textContent = "Đăng nhập";
+          showNetError(msg, err);
+        });
+      });
+
+      $("logoutBtn").addEventListener("click", function () {
+        signOutRemote().then(function () { location.reload(); });
+      });
+
+      function bootApp() {
+        ensureSession().then(function (ok) {
+          var user = ok ? sessionUser() : null;
+          if (!user) { showLoginError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."); return null; }
+          state.user = user;
+          return restSelect("profiles", { single: true, filters: [{ col: "id", val: state.user.id }] });
+        }).then(function (res) {
+          if (!res) return;
+          if (res.error || !res.data) {
+            signOutRemote();
+            showLoginError(res.error && isNetErr(res.error)
+              ? "Không kết nối được máy chủ khi tải hồ sơ. Vui lòng kiểm tra mạng và đăng nhập lại." + errDetail(res.error)
+              : "Tài khoản chưa được cấp hồ sơ nhân viên. Vui lòng liên hệ quản trị viên.");
+            return;
+          }
+          state.profile = res.data;
+          if (state.profile.active === false) {
+            signOutRemote();
+            showLoginError("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+            return;
+          }
+          enterApp();
+        }).catch(function () {
+          showLoginError("Có lỗi khi tải thông tin tài khoản. Vui lòng thử lại.");
+        });
+      }
+      function showLoginError(text) {
+        $("appView").hidden = true;
+        $("loginView").style.display = "";
+        showMsg($("loginMsg"), text);
+      }
+
+      /* ================= Shell / tabs ================= */
+      var TABS = [
+        { id: "packages", label: "Gói cước" },
+        { id: "kpi", label: "KPI" },
+        { id: "me", label: "Tôi" },
+        { id: "admin", label: "Quản trị", adminOnly: true }
+      ];
+      function buildNav() {
+        var html = TABS.filter(function (t) {
+          return !t.adminOnly || (state.profile && state.profile.role === "admin");
+        }).map(function (t) {
+          return '<button type="button" data-tab="' + t.id + '">' + ICONS[t.id] + "<span>" + t.label + "</span></button>";
+        }).join("");
+        $("topNav").innerHTML = html;
+        $("bottomNav").innerHTML = html;
+        var btns = document.querySelectorAll("[data-tab]");
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].addEventListener("click", function () { switchTab(this.getAttribute("data-tab")); });
+        }
+      }
+      function switchTab(id) {
+        if (id === "admin" && (!state.profile || state.profile.role !== "admin")) id = "packages";
+        state.activeTab = id;
+        var pages = document.querySelectorAll(".tabpage");
+        for (var i = 0; i < pages.length; i++) pages[i].classList.toggle("active", pages[i].id === "page-" + id);
+        var btns = document.querySelectorAll("[data-tab]");
+        for (var j = 0; j < btns.length; j++) btns[j].classList.toggle("active", btns[j].getAttribute("data-tab") === id);
+        if (id === "packages") loadPackages();
+        if (id === "kpi") loadKpi();
+        if (id === "me") loadSalaries();
+        window.scrollTo(0, 0);
+      }
+
+      function enterApp() {
+        $("loginView").style.display = "none";
+        $("appView").hidden = false;
+        var p = state.profile;
+        $("whoName").textContent = p.full_name || p.hrm_code;
+        $("whoMeta").textContent = p.hrm_code + (p.role === "admin" ? " · Quản trị viên" : "");
+        $("meName").textContent = p.full_name || "—";
+        $("meHrm").textContent = p.hrm_code || "—";
+        $("mePos").textContent = p.position || "—";
+        var posSel = $("cPos");
+        posSel.innerHTML = POSITIONS.map(function (x) { return "<option>" + esc(x) + "</option>"; }).join("");
+        buildNav();
+        switchTab("packages");
+      }
+
+      /* ================= Packages ================= */
+      function loadPackages() {
+        if (state.packagesLoaded) return;
+        restSelect("packages", { order: { col: "price_m1", asc: true } }).then(function (res) {
+          if (res.error) {
+            $("pkgList").innerHTML = '<div class="empty">Không tải được danh sách gói cước. Vui lòng thử lại sau.</div>';
+            $("resultCount").textContent = "";
+            return;
+          }
+          state.packages = res.data || [];
+          state.packagesLoaded = true;
+          renderPackages();
+        });
+      }
+
+      function pkgHaystack(p) {
+        var feats = Array.isArray(p.features) ? p.features.join(" ") : "";
+        return stripAccents([p.name, p.category, p.speed_label, p.note, feats].join(" "));
+      }
+      function parseQuery(q) {
+        var tokens = stripAccents(q).split(/\s+/).filter(Boolean);
+        var textTokens = [], priceTokens = [];
+        tokens.forEach(function (t) {
+          var m = t.match(/^(\d+(?:[.,]\d+)?)k$/);
+          if (m) { priceTokens.push(Math.round(parseFloat(m[1].replace(",", ".")) * 1000)); return; }
+          if (/^\d{5,}$/.test(t)) { priceTokens.push(parseInt(t, 10)); return; }
+          textTokens.push(t);
+        });
+        return { textTokens: textTokens, priceTokens: priceTokens };
+      }
+      function pkgMatches(p) {
+        var f = state.filters;
+        if (f.grp !== "all" && p.grp !== f.grp) return false;
+        if (f.from != null && Number(p.price_m1) < f.from) return false;
+        if (f.to != null && Number(p.price_m1) > f.to) return false;
+        if (f.speed > 0 && (p.speed_mbps == null || Number(p.speed_mbps) < f.speed)) return false;
+        if (f.needs.has_tv && !p.has_tv) return false;
+        if (f.needs.has_cam && !p.has_cam) return false;
+        if (f.needs.has_mob && !p.has_mob) return false;
+        if (f.needs.has_ipt && !p.has_ipt) return false;
+        if (f.needs.mesh && !(Number(p.mesh_packs) > 0)) return false;
+        if (f.q) {
+          var parsed = parseQuery(f.q);
+          var hay = pkgHaystack(p);
+          for (var i = 0; i < parsed.textTokens.length; i++) {
+            if (hay.indexOf(parsed.textTokens[i]) === -1) return false;
+          }
+          for (var j = 0; j < parsed.priceTokens.length; j++) {
+            if (Number(p.price_m1) > parsed.priceTokens[j]) return false;
+          }
+        }
+        return true;
+      }
+      function renderPackages() {
+        var list = state.packages.filter(pkgMatches);
+        var s = state.filters.sort;
+        list.sort(function (a, b) {
+          if (s === "price-asc") return (a.price_m1 || 0) - (b.price_m1 || 0);
+          if (s === "price-desc") return (b.price_m1 || 0) - (a.price_m1 || 0);
+          if (s === "speed-desc") return (b.speed_mbps || 0) - (a.speed_mbps || 0);
+          if (s === "speed-asc") return (a.speed_mbps || 0) - (b.speed_mbps || 0);
+          return 0;
+        });
+        $("resultCount").innerHTML = "Tìm thấy <b>" + list.length + "</b> gói cước";
+        if (!list.length) {
+          $("pkgList").innerHTML = '<div class="empty">Không có gói cước nào khớp bộ lọc. Thử nới lỏng điều kiện lọc.</div>';
+          return;
+        }
+        $("pkgList").innerHTML = '<div class="pkg-grid">' + list.map(function (p) {
+          var metas = [];
+          if (p.speed_label) metas.push(esc(p.speed_label));
+          else if (p.speed_mbps) metas.push(esc(p.speed_mbps >= 1000 ? (p.speed_mbps / 1000) + " Gbps" : p.speed_mbps + " Mbps"));
+          if (Number(p.mesh_packs) > 0) metas.push("Mesh x" + p.mesh_packs);
+          if (p.has_tv) metas.push("Truyền hình");
+          if (p.has_cam) metas.push("Camera");
+          if (p.has_mob) metas.push("Di động");
+          if (p.has_ipt) metas.push("IP tĩnh");
+          var feats = Array.isArray(p.features) ? p.features.slice(0, 3) : [];
+          return '<button type="button" class="pkg-card" data-pkg="' + esc(p.id) + '">' +
+            '<span class="pkg-top"><span class="pkg-name">' + esc(p.name) + '</span>' +
+            '<span class="tag' + (p.grp === "dn" ? " dn" : "") + '">' + (p.grp === "dn" ? "Doanh nghiệp" : "Cá nhân") + "</span></span>" +
+            '<span class="pkg-price">' + fmtVND(p.price_m1) + " <small>/ tháng</small></span>" +
+            (metas.length ? '<span class="pkg-meta">' + metas.map(function (m) { return "<span>" + m + "</span>"; }).join("") + "</span>" : "") +
+            (feats.length ? '<ul class="pkg-feats">' + feats.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
+            "</button>";
+        }).join("") + "</div>";
+        var cards = document.querySelectorAll("[data-pkg]");
+        for (var i = 0; i < cards.length; i++) {
+          cards[i].addEventListener("click", function () { openPkgDetail(this.getAttribute("data-pkg")); });
+        }
+      }
+
+      function openPkgDetail(id) {
+        var p = null;
+        for (var i = 0; i < state.packages.length; i++) if (state.packages[i].id === id) { p = state.packages[i]; break; }
+        if (!p) return;
+        $("modalTitle").textContent = p.name || "Chi tiết gói";
+        var html = "";
+        var metas = [];
+        metas.push(p.grp === "dn" ? "Doanh nghiệp" : "Cá nhân");
+        if (p.category) metas.push(p.category);
+        if (p.speed_label) metas.push(p.speed_label);
+        if (Number(p.mesh_packs) > 0) metas.push("Wifi Mesh x" + p.mesh_packs);
+        if (p.has_tv) metas.push("Truyền hình");
+        if (p.has_cam) metas.push("Camera");
+        if (p.has_mob) metas.push("Di động");
+        if (p.has_ipt) metas.push("IP tĩnh");
+        html += '<div class="pkg-meta" style="margin-top:8px">' + metas.map(function (m) { return "<span>" + esc(m) + "</span>"; }).join("") + "</div>";
+        var cycles = p.cycles && typeof p.cycles === "object" ? p.cycles : null;
+        html += "<h3>Giá theo chu kỳ đóng trước</h3>";
+        if (cycles && Object.keys(cycles).length) {
+          var keys = Object.keys(cycles).sort(function (a, b) { return Number(a) - Number(b); });
+          html += '<table class="cycle-table"><tbody>' + keys.map(function (k) {
+            var total = Number(cycles[k]);
+            var per = Math.round(total / Number(k));
+            return "<tr><td>Đóng " + esc(k) + " tháng</td><td>" + fmtVND(total) + (Number(k) > 1 ? ' <span style="color:var(--muted);font-weight:400">(' + fmtVND(per) + "/tháng)</span>" : "") + "</td></tr>";
+          }).join("") + "</tbody></table>";
+        } else {
+          html += '<p style="margin:0">Giá 1 tháng: <b>' + fmtVND(p.price_m1) + "</b></p>";
+        }
+        if (Array.isArray(p.features) && p.features.length) {
+          html += "<h3>Tính năng</h3><ul class=\"feats\">" + p.features.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
+        }
+        if (p.note) {
+          html += "<h3>Ghi chú</h3><div class=\"note\">" + esc(p.note) + "</div>";
+        }
+        $("modalBody").innerHTML = html;
+        $("modalBack").classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+      function closeModal() { $("modalBack").classList.remove("open"); document.body.style.overflow = ""; }
+      $("modalClose").addEventListener("click", closeModal);
+      $("modalBack").addEventListener("click", function (e) { if (e.target === this) closeModal(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+
+      /* ---- filter wiring ---- */
+      var filterTimer = null;
+      function scheduleRender() {
+        clearTimeout(filterTimer);
+        filterTimer = setTimeout(renderPackages, 120);
+      }
+      $("qInput").addEventListener("input", function () {
+        state.filters.q = this.value;
+        $("qClear").classList.toggle("show", !!this.value);
+        scheduleRender();
+      });
+      $("qClear").addEventListener("click", function () {
+        $("qInput").value = ""; state.filters.q = "";
+        this.classList.remove("show"); renderPackages();
+      });
+      $("grpSeg").addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-grp]"); if (!b) return;
+        state.filters.grp = b.getAttribute("data-grp");
+        var bs = this.querySelectorAll("button");
+        for (var i = 0; i < bs.length; i++) bs[i].classList.toggle("active", bs[i] === b);
+        renderPackages();
+      });
+      function readPriceRange() {
+        var f = $("priceFrom").value, t = $("priceTo").value;
+        state.filters.from = f === "" ? null : Number(f) * 1000;
+        state.filters.to = t === "" ? null : Number(t) * 1000;
+        scheduleRender();
+      }
+      $("priceFrom").addEventListener("input", readPriceRange);
+      $("priceTo").addEventListener("input", readPriceRange);
+      $("speedChips").addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-speed]"); if (!b) return;
+        state.filters.speed = Number(b.getAttribute("data-speed"));
+        var bs = this.querySelectorAll("button");
+        for (var i = 0; i < bs.length; i++) bs[i].setAttribute("aria-pressed", bs[i] === b ? "true" : "false");
+        renderPackages();
+      });
+      $("needChips").addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-need]"); if (!b) return;
+        var key = b.getAttribute("data-need");
+        var on = b.getAttribute("aria-pressed") !== "true";
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        state.filters.needs[key] = on;
+        renderPackages();
+      });
+      $("sortSel").addEventListener("change", function () { state.filters.sort = this.value; renderPackages(); });
+      $("resetFilters").addEventListener("click", function () {
+        state.filters = { q: "", grp: "all", from: null, to: null, speed: 0, needs: {}, sort: "price-asc" };
+        $("qInput").value = ""; $("qClear").classList.remove("show");
+        $("priceFrom").value = ""; $("priceTo").value = "";
+        $("sortSel").value = "price-asc";
+        var gs = $("grpSeg").querySelectorAll("button");
+        for (var i = 0; i < gs.length; i++) gs[i].classList.toggle("active", gs[i].getAttribute("data-grp") === "all");
+        var sc = $("speedChips").querySelectorAll("button");
+        for (var j = 0; j < sc.length; j++) sc[j].setAttribute("aria-pressed", sc[j].getAttribute("data-speed") === "0" ? "true" : "false");
+        var nc = $("needChips").querySelectorAll("button");
+        for (var k = 0; k < nc.length; k++) nc[k].setAttribute("aria-pressed", "false");
+        renderPackages();
+      });
+
+      /* ================= KPI ================= */
+      function loadKpi() {
+        if (state.kpiLoaded) { renderKpi(); return; }
+        var kpiOpts = { order: { col: "position", asc: true } };
+        if (state.profile.role !== "admin" && state.profile.position) {
+          kpiOpts.filters = [{ col: "position", val: state.profile.position }];
+        }
+        restSelect("kpi_frames", kpiOpts).then(function (res) {
+          if (res.error) {
+            $("kpiBody").innerHTML = '<div class="empty">Không tải được khung KPI. Vui lòng thử lại sau.</div>';
+            return;
+          }
+          state.kpiFrames = res.data || [];
+          state.kpiLoaded = true;
+          if (state.profile.role === "admin") {
+            $("kpiAdminWrap").hidden = false;
+            var sel = $("kpiSel");
+            sel.innerHTML = state.kpiFrames.map(function (f, i) {
+              return '<option value="' + i + '">' + esc(f.position) + " — " + esc(f.month_label || "") + "</option>";
+            }).join("");
+            sel.onchange = renderKpi;
+          }
+          renderKpi();
+        });
+      }
+      function fmtKpiTime(iso) {
+        if (!iso) return "";
+        try {
+          var d = new Date(iso);
+          var parts = new Intl.DateTimeFormat("vi-VN", {
+            timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit",
+            day: "2-digit", month: "2-digit", year: "numeric", hour12: false
+          }).formatToParts(d);
+          var m = {};
+          parts.forEach(function (x) { m[x.type] = x.value; });
+          return m.hour + ":" + m.minute + " " + m.day + "/" + m.month + "/" + m.year;
+        } catch (e) { return ""; }
+      }
+      function renderKpi() {
+        var frames = state.kpiFrames;
+        if (!frames.length) {
+          $("kpiBody").innerHTML = '<div class="empty">Chưa có khung KPI cho chức danh của bạn. Vui lòng liên hệ quản trị viên.</div>';
+          return;
+        }
+        var frame;
+        if (state.profile.role === "admin") {
+          frame = frames[Number($("kpiSel").value || 0)] || frames[0];
+        } else {
+          frame = frames[0];
+          for (var i = 0; i < frames.length; i++) {
+            if (frames[i].position === state.profile.position) { frame = frames[i]; break; }
+          }
+        }
+        $("kpiSub").textContent = (frame.month_label || "Khung KPI") + " · " + (frame.position || "");
+        var rows = Array.isArray(frame.rows) ? frame.rows : [];
+        var html = '<div class="card" style="padding:6px 10px"><table class="kpi-table"><thead><tr>' +
+          "<th>Chỉ tiêu</th><th>Dịch vụ</th><th class=\"num\">Trọng số</th><th>Tham chiếu</th>" +
+          "</tr></thead><tbody>";
+        if (!rows.length) {
+          html += '<tr><td colspan="4" style="text-align:center;color:var(--muted)">Khung KPI chưa có chỉ tiêu.</td></tr>';
+        }
+        html += rows.map(function (r) {
+          var w = r.trong_so;
+          var wTxt = (w == null || w === "") ? "—" : (isNaN(Number(w)) ? esc(w) : (Number(w) <= 1 ? Math.round(Number(w) * 100) + "%" : esc(w)));
+          return "<tr><td class=\"ci\">" + esc(r.chi_tieu) + "</td><td class=\"dv\">" + esc(r.dich_vu || "—") +
+            "</td><td class=\"num\">" + wTxt + "</td><td class=\"ref\">" + esc(r.tham_chieu || "—") + "</td></tr>";
+        }).join("");
+        html += "</tbody></table></div>";
+        var t = fmtKpiTime(frame.updated_at);
+        if (t) html += '<p class="kpi-foot">Cập nhật vào lúc ' + t + "</p>";
+        $("kpiBody").innerHTML = html;
+      }
+
+      /* ================= Salaries ================= */
+      function loadSalaries() {
+        if (state.salariesLoaded) { renderSalary(); return; }
+        restSelect("salaries", {
+          filters: [{ col: "profile_id", val: state.user.id }],
+          order: { col: "month", asc: false }
+        }).then(function (res) {
+            if (res.error) {
+              $("salaryBody").innerHTML = '<div class="empty">Không tải được phiếu lương. Vui lòng thử lại sau.</div>';
+              $("salarySel").innerHTML = "";
+              return;
+            }
+            state.salaries = res.data || [];
+            state.salariesLoaded = true;
+            var sel = $("salarySel");
+            sel.innerHTML = state.salaries.map(function (s, i) {
+              return '<option value="' + i + '">' + esc(monthLabel(s.month)) + "</option>";
+            }).join("");
+            sel.onchange = renderSalary;
+            renderSalary();
+          });
+      }
+      function detailLabel(key) {
+        return String(key).replace(/_/g, " ");
+      }
+      function renderSalary() {
+        var body = $("salaryBody");
+        if (!state.salaries.length) {
+          body.innerHTML = '<div class="empty">Chưa có phiếu lương nào được cập nhật cho tài khoản của bạn.</div>';
+          return;
+        }
+        var s = state.salaries[Number($("salarySel").value || 0)] || state.salaries[0];
+        var rows = [];
+        function row(label, value, cls) {
+          rows.push('<div class="salary-row ' + (cls || "") + '"><span>' + esc(label) + '</span><span class="v">' + value + "</span></div>");
+        }
+        if (s.position) row("Chức danh", esc(s.position));
+        if (s.workdays != null) row("Ngày công", esc(s.workdays));
+        if (s.gross != null) row("Tổng thu nhập", fmtVND(s.gross), "total");
+        if (s.bhxh != null) row("BHXH", "− " + fmtVND(s.bhxh), "deduct");
+        if (s.bhyt != null) row("BHYT", "− " + fmtVND(s.bhyt), "deduct");
+        if (s.bhtn != null) row("BHTN", "− " + fmtVND(s.bhtn), "deduct");
+        if (s.pit != null) row("Thuế TNCN", "− " + fmtVND(s.pit), "deduct");
+        var details = s.details && typeof s.details === "object" ? s.details : null;
+        var detailHtml = "";
+        if (details && Object.keys(details).length) {
+          var items = Object.keys(details).map(function (k) {
+            var v = details[k];
+            var shown = (typeof v === "number") ? fmtVND(v) : esc(v);
+            return '<div class="salary-row"><span>' + esc(detailLabel(k)) + '</span><span class="v">' + shown + "</span></div>";
+          }).join("");
+          detailHtml = '<h3 style="font-size:14px;margin:16px 0 4px">Các thành phần chi tiết</h3><div class="salary-rows">' + items + "</div>";
+        }
+        if (s.net != null) row("Thực lãnh", fmtVND(s.net), "net");
+        body.innerHTML = '<div class="salary-rows">' + rows.join("") + "</div>" + detailHtml;
+      }
+
+      /* ---- Change password ---- */
+      $("pwForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var msg = $("pwMsg"); hideMsg(msg);
+        var p1 = $("newPw").value, p2 = $("newPw2").value;
+        if (p1.length < 6) { showMsg(msg, "Mật khẩu mới phải có ít nhất 6 ký tự."); return; }
+        if (p1 !== p2) { showMsg(msg, "Mật khẩu nhập lại không khớp."); return; }
+        var btn = $("pwBtn"); btn.disabled = true; btn.textContent = "Đang đổi…";
+        ensureSession().then(function (ok) {
+          if (!ok) return { status: 401, text: "" };
+          var headers = authHeaders();
+          headers["Content-Type"] = "application/json";
+          return apiCall(SUPABASE_URL + "/auth/v1/user", {
+            method: "PUT", headers: headers,
+            body: JSON.stringify({ password: p1 })
+          });
+        }).then(function (r) {
+          btn.disabled = false; btn.textContent = "Đổi mật khẩu";
+          var data = parseJson(r.text) || {};
+          if (r.status >= 200 && r.status < 300) {
+            $("newPw").value = ""; $("newPw2").value = "";
+            showMsg(msg, "Đổi mật khẩu thành công.", "ok");
+          } else {
+            showMsg(msg, "Đổi mật khẩu thất bại: " + (data.msg || data.message || data.error_description || ("Máy chủ trả lỗi " + r.status)));
+          }
+        }).catch(function (err) {
+          btn.disabled = false; btn.textContent = "Đổi mật khẩu";
+          showMsg(msg, "Không kết nối được máy chủ. Vui lòng thử lại." + errDetail(err));
+        });
+      });
+
+      /* ================= Admin ================= */
+      function callAdminFn(path, payload, msgEl, btn, btnLabel, okText, form) {
+        btn.disabled = true; btn.textContent = "Đang xử lý…";
+        hideMsg(msgEl);
+        ensureSession().then(function (ok) {
+          var token = ok && session ? session.access_token : null;
+          if (!token) { btn.disabled = false; btn.textContent = btnLabel; showMsg(msgEl, "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."); return null; }
+          return apiCall(SUPABASE_URL + "/functions/v1/" + path, {
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer " + token,
+              "apikey": SUPABASE_ANON_KEY,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+        }).then(function (r) {
+          if (!r) return;
+          btn.disabled = false; btn.textContent = btnLabel;
+          var data = parseJson(r.text) || {};
+          if (r.status >= 200 && r.status < 300) {
+            showMsg(msgEl, okText, "ok");
+            if (form) form.reset();
+          } else {
+            showMsg(msgEl, "Thất bại: " + (data.error || data.message || ("Máy chủ trả lỗi " + r.status)));
+          }
+        }).catch(function (err) {
+          btn.disabled = false; btn.textContent = btnLabel;
+          showMsg(msgEl, "Không kết nối được máy chủ. Vui lòng thử lại." + errDetail(err));
+        });
+      }
+      $("createForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        callAdminFn("admin-create-user", {
+          hrm_code: $("cHrm").value.trim(),
+          full_name: $("cName").value.trim(),
+          password: $("cPw").value,
+          role: $("cRole").value,
+          position: $("cPos").value
+        }, $("createMsg"), $("createBtn"), "Tạo tài khoản",
+          "Tạo tài khoản thành công cho mã NV " + $("cHrm").value.trim() + ".", this);
+      });
+      $("resetForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        callAdminFn("admin-reset-password", {
+          hrm_code: $("rHrm").value.trim(),
+          new_password: $("rPw").value
+        }, $("resetMsg"), $("resetBtn"), "Reset mật khẩu",
+          "Đã đặt lại mật khẩu cho mã NV " + $("rHrm").value.trim() + ".", this);
+      });
+
+      /* ================= Session restore ================= */
+      if (session && session.access_token) bootApp();
+    </script>
+  </body>
+</html>
