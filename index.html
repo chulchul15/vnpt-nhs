@@ -143,13 +143,13 @@
       .brand-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
       .brand-name { font-weight: 800; color: var(--blue-deep); font-size: 17px; white-space: nowrap; }
       .brand-sub { font-size: 11px; font-weight: 500; color: var(--muted); }
-      .topnav { display: none; gap: 4px; margin-left: 10px; }
+      .topnav { display: none; gap: 4px; margin-left: 10px; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
       .topnav button, .bottomnav button {
         border: 0; background: transparent; color: var(--muted);
         font-weight: 600; font-size: 14px;
         display: inline-flex; align-items: center; gap: 7px;
       }
-      .topnav button { padding: 8px 13px; border-radius: 9px; }
+      .topnav button { padding: 8px 13px; border-radius: 9px; flex: none; white-space: nowrap; }
       .topnav button.active { background: var(--blue-soft); color: var(--blue-deep); }
       .topnav button:hover { color: var(--blue-deep); }
       .userbox { margin-left: auto; display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -160,10 +160,12 @@
         position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
         background: var(--surface); border-top: 1px solid var(--line);
         display: flex; padding-bottom: env(safe-area-inset-bottom);
+        overflow-x: auto; scrollbar-width: none;
       }
+      .bottomnav::-webkit-scrollbar { display: none; }
       .bottomnav button {
-        flex: 1; flex-direction: column; gap: 3px;
-        padding: 8px 2px 7px; font-size: 11.5px;
+        flex: 1 0 auto; min-width: 68px; flex-direction: column; gap: 3px;
+        padding: 8px 2px 7px; font-size: 11px;
       }
       .bottomnav button.active { color: var(--blue); }
       .bottomnav button svg { width: 22px; height: 22px; }
@@ -217,8 +219,8 @@
       .pkg-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
       .pkg-card {
         background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-        padding: 16px; text-align: left; width: 100%;
-        display: flex; flex-direction: column; gap: 8px;
+        width: 100%;
+        display: flex; flex-direction: column;
         transition: border-color 0.15s ease, box-shadow 0.15s ease;
       }
       .pkg-card:hover { border-color: var(--blue); box-shadow: var(--shadow); }
@@ -280,6 +282,34 @@
       .kpi-table td.ref { color: var(--muted); font-size: 13px; white-space: pre-wrap; }
       .kpi-foot { color: var(--muted); font-size: 13px; margin-top: 12px; }
 
+      /* ---------- Thanh tiến độ KPI ---------- */
+      .pgbar { height: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; margin: 7px 0 3px; }
+      .pgbar > i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--blue); transition: width .35s ease; }
+      .pgbar.done > i { background: var(--good); }
+      .pgline { display: flex; justify-content: space-between; align-items: baseline; gap: 6px 12px; flex-wrap: wrap; font-size: 13.5px; color: var(--muted); }
+      .pgline b { color: var(--ink); font-size: 14.5px; }
+      .pgempty { color: var(--muted); font-size: 13px; font-style: italic; margin: 4px 0 2px; }
+      .pg-total { margin: 0 0 14px; }
+      .pg-total .pghead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 14.5px; font-weight: 700; }
+      .pg-total .pgbar { height: 13px; }
+      .kpi-table td.stt { font-weight: 700; white-space: nowrap; width: 34px; }
+      .kpi-table td.pg { background: var(--surface-2); }
+      .kpi-table td.sum { font-weight: 700; white-space: nowrap; }
+      .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
+      .seg button { border: 0; background: transparent; padding: 10px 18px; font-size: 14px; min-height: 44px; color: var(--muted); font-weight: 600; }
+      .seg button.on { background: var(--blue); color: #fff; }
+      .pg-note { font-size: 13px; color: var(--muted); margin: 0 0 10px; }
+      @media (max-width: 640px) {
+        .kpi-table td.stt::before { content: "STT: "; color: var(--muted); font-weight: 500; }
+        .kpi-table td.sum::before { color: var(--muted); font-weight: 500; }
+        .kpi-table td.sum-a::before { content: "Thực hiện: "; }
+        .kpi-table td.sum-t::before { content: "Kế hoạch: "; }
+        .kpi-table td.sum-p::before { content: "Tiến độ: "; display: block; margin-bottom: 2px; }
+        .kpi-table td.pg { background: transparent; }
+        .seg { width: 100%; }
+        .seg button { flex: 1; }
+      }
+
       /* ---------- Profile / salary ---------- */
       .stack { display: grid; gap: 16px; }
       .info-grid { display: grid; gap: 10px; grid-template-columns: 1fr; }
@@ -296,6 +326,79 @@
       .salary-row.deduct .v { color: var(--bad); }
       .two-col { display: grid; gap: 16px; grid-template-columns: 1fr; }
 
+
+      /* ---------- Wizard / So sánh / Kênh / Phí / Lương ---------- */
+      [hidden] { display: none !important; }
+      .wpanel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; }
+      .wlead { color: var(--muted); font-size: 13.5px; margin: 0 0 6px; }
+      .wq { font-weight: 700; font-size: 14.5px; margin: 16px 0 8px; }
+      .wq small { font-weight: 500; color: var(--muted); }
+      .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+      .opt { border: 1.5px solid var(--line); background: var(--surface); padding: 9px 14px; border-radius: 12px; font-weight: 600; font-size: 14px; text-align: left; }
+      .opt[aria-pressed="true"] { background: var(--blue-soft); border-color: var(--blue); color: var(--blue-deep); }
+      .wfoot { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      .wreason { font-size: 13.5px; color: var(--muted); margin: 8px 0 0; }
+      .wreason b { color: var(--good); }
+      .pkg-main {
+        display: flex; flex-direction: column; gap: 8px; width: 100%;
+        text-align: left; background: transparent; border: 0;
+        padding: 16px 16px 6px; cursor: pointer;
+      }
+      .pkg-card { padding: 0; cursor: default; }
+      .cmp-toggle {
+        margin: 6px 16px 14px; border: 1px dashed var(--blue); background: var(--blue-soft);
+        color: var(--blue-deep); border-radius: 9px; padding: 8px 10px;
+        font-size: 13.5px; font-weight: 600;
+      }
+      .cmp-toggle[aria-pressed="true"] { background: var(--blue); border-style: solid; color: #fff; }
+      .cmpbar {
+        position: fixed; left: 50%; transform: translateX(-50%); bottom: 78px; z-index: 50;
+        background: var(--blue-deep); color: #fff; border-radius: 999px;
+        padding: 9px 10px 9px 18px; display: none; align-items: center; gap: 10px;
+        box-shadow: var(--shadow); max-width: calc(100vw - 24px);
+        font-size: 14px; font-weight: 600; white-space: nowrap;
+      }
+      .cmpbar.show { display: flex; }
+      .cmpbar .go { background: #fff; color: var(--blue-deep); border: 0; font-weight: 700; padding: 7px 14px; border-radius: 999px; font-size: 13.5px; }
+      .cmpbar .clr { background: transparent; color: #fff; border: 0; padding: 7px 8px; font-weight: 600; font-size: 13.5px; }
+      .toast {
+        position: fixed; left: 50%; bottom: 140px; transform: translateX(-50%) translateY(20px);
+        background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px;
+        font-weight: 600; font-size: 14px; opacity: 0; pointer-events: none;
+        transition: opacity 0.25s, transform 0.25s; z-index: 80; max-width: calc(100vw - 32px); text-align: center;
+      }
+      .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+      .table-scroll { overflow-x: auto; }
+      .cmp-table { width: 100%; min-width: 560px; border-collapse: collapse; background: var(--surface); font-size: 14px; }
+      .cmp-table th, .cmp-table td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top; text-align: left; }
+      .cmp-table th { background: var(--surface-2); font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; width: 108px; }
+      .cmp-table ul { margin: 0; padding-left: 17px; color: var(--muted); font-size: 13px; }
+      .cmp-table ul li { margin: 2px 0; }
+      .cmp-name { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+      .cmp-price { font-size: 19px; font-weight: 800; color: var(--blue); }
+      .cmp-price small { font-size: 12px; font-weight: 500; color: var(--muted); }
+      .chrow { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 13px; display: flex; gap: 10px; align-items: center; }
+      .chrow .nm { font-weight: 700; font-size: 14.5px; }
+      .chrow .meta { font-size: 12.5px; color: var(--muted); }
+      .chrow .badges { margin-left: auto; display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+      .chrow.off { opacity: 0.55; }
+      .tag.yes { background: var(--good-bg); color: var(--good); }
+      .tag.no { background: var(--bad-bg); color: var(--bad); }
+      #chOnly[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+      .plain { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+      .plain th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); padding: 9px 10px; border-bottom: 2px solid var(--line); white-space: nowrap; }
+      .plain td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      .plain tr:last-child td { border-bottom: 0; }
+      .plain td.v { text-align: center; font-weight: 700; white-space: nowrap; }
+      .bullets { margin: 6px 0 0; padding-left: 18px; font-size: 14px; }
+      .bullets li { margin: 7px 0; }
+      .formula { background: var(--surface-2); border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 8px; padding: 10px 13px; margin: 10px 0; font-size: 14.5px; overflow-x: auto; }
+      .formula .fl { display: block; font-size: 12.5px; font-weight: 700; color: var(--blue-deep); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+      .ktag { display: inline-block; font-size: 11.5px; font-weight: 600; background: var(--blue-soft); color: var(--blue-deep); border-radius: 999px; padding: 2px 9px; margin: 2px 4px 2px 0; }
+      .tablebox h3 { font-size: 15.5px; margin: 0 0 8px; }
+      .tablebox .sub { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+      .tablebox + .tablebox { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+      .src { font-size: 12.5px; color: var(--muted); margin: 10px 0 0; }
       /* ---------- Desktop ---------- */
       @media (min-width: 860px) {
         .topnav { display: flex; }
@@ -327,6 +430,93 @@
       }
       @media (prefers-reduced-motion: reduce) {
         * { transition: none !important; }
+      }
+      /* ---------- Mobile responsive: 360px / 390px / 430px+ ---------- */
+      @media (max-width: 640px) {
+        html, body { overflow-x: clip; }
+
+        main { padding: 16px 14px calc(104px + env(safe-area-inset-bottom)); }
+        .card, .wpanel, .filters { padding: 16px 14px; }
+
+        /* Tiêu đề co giãn theo cỡ màn hình */
+        .page-head { margin-bottom: 14px; }
+        .page-head h1 { font-size: clamp(19px, 5.2vw, 22px); }
+        .brand-name { font-size: clamp(15px, 4.4vw, 17px); }
+        .topbar-in { padding: 10px 14px; }
+
+        /* Chữ nội dung tối thiểu 14px */
+        .page-head p, .wlead, .result-count, .wreason, .login-sub,
+        .plain, .bullets, .tablebox .sub, .modal .note, #w-hint { font-size: 14px; }
+        .plain th { font-size: 13px; }
+        .cmp-table { font-size: 14px; }
+        .cmp-table ul { font-size: 13.5px; }
+        .cycle-table { font-size: 14px; }
+        .chrow .meta { font-size: 13px; }
+
+        /* Bottom nav 9 mục: cuộn ngang mượt, tap target lớn */
+        .bottomnav {
+          -webkit-overflow-scrolling: touch;
+          scroll-behavior: smooth;
+          padding-left: env(safe-area-inset-left);
+          padding-right: env(safe-area-inset-right);
+        }
+        .bottomnav button {
+          position: relative;
+          min-width: 66px;
+          min-height: 58px;
+          font-size: 11px;
+          padding: 8px 4px;
+          white-space: nowrap;
+        }
+        .bottomnav button.active { font-weight: 700; }
+        .bottomnav button.active::after {
+          content: ""; position: absolute; top: 0; left: 50%;
+          transform: translateX(-50%);
+          width: 26px; height: 3px; border-radius: 0 0 3px 3px;
+          background: var(--blue);
+        }
+
+        /* Tap target đủ lớn */
+        .btn.small { min-height: 44px; padding: 10px 14px; }
+        .seg button { min-height: 44px; }
+        .chip { min-height: 40px; display: inline-flex; align-items: center; }
+
+        /* Wizard: nút chọn dạng lưới 2 cột, cao tối thiểu 44px */
+        .opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .opt {
+          min-height: 48px; display: flex; align-items: center; justify-content: center;
+          text-align: center; font-size: 14px; padding: 10px 12px;
+        }
+        #w-house .opts { grid-template-columns: 1fr; }
+        #w-house .opt { justify-content: flex-start; text-align: left; }
+
+        /* Bảng: cuộn ngang trong khung riêng, không tràn trang */
+        .table-scroll { -webkit-overflow-scrolling: touch; }
+        .cmp-table { min-width: 520px; }
+        .cmp-price { font-size: clamp(17px, 5vw, 19px); }
+        .pkg-price { font-size: clamp(19px, 5.5vw, 21px); }
+        .formula { -webkit-overflow-scrolling: touch; }
+
+        /* Kênh MyTV: badge xuống dòng trên màn hẹp */
+        .chrow { flex-wrap: wrap; row-gap: 6px; }
+        .chrow .badges { margin-left: 0; width: 100%; justify-content: flex-start; }
+
+        /* Thanh so sánh nổi: nằm trên nav, tính cả safe-area iPhone */
+        .cmpbar {
+          bottom: calc(84px + env(safe-area-inset-bottom));
+          max-width: calc(100vw - 20px);
+          font-size: 13px;
+          padding: 7px 7px 7px 15px;
+          gap: 8px;
+        }
+        .cmpbar .go, .cmpbar .clr { min-height: 44px; padding: 10px 12px; }
+        .toast { bottom: calc(150px + env(safe-area-inset-bottom)); }
+      }
+      /* Màn rất nhỏ (≤380px): nav gọn hơn một chút */
+      @media (max-width: 380px) {
+        .bottomnav button { min-width: 60px; font-size: 10.5px; }
+        .cmpbar { font-size: 12.5px; }
+        main { padding-left: 12px; padding-right: 12px; }
       }
     </style>
   </head>
@@ -446,6 +636,183 @@
           </div>
         </section>
 
+
+        <!-- ===== Tab Tư vấn ===== -->
+        <section class="tabpage" id="page-advise">
+          <div class="page-head">
+            <h1>Tư vấn chọn gói</h1>
+            <p>Trả lời vài câu hỏi về khách hàng, app sẽ gợi ý các gói phù hợp nhất kèm lý do.</p>
+          </div>
+          <div class="wpanel">
+            <p class="wq">1. Khách hàng thuộc nhóm nào?</p>
+            <div class="opts" id="w-group">
+              <button type="button" class="opt" data-v="gd" aria-pressed="true">Gia đình / hộ cá nhân</button>
+              <button type="button" class="opt" data-v="dn" aria-pressed="false">Doanh nghiệp / hộ kinh doanh</button>
+            </div>
+
+            <div id="w-gd">
+              <p class="wq">2. Ngân sách cước mỗi tháng?</p>
+              <div class="opts" id="w-budget">
+                <button type="button" class="opt" data-v="200000" aria-pressed="false">≤ 200.000đ</button>
+                <button type="button" class="opt" data-v="250000" aria-pressed="true">≤ 250.000đ</button>
+                <button type="button" class="opt" data-v="300000" aria-pressed="false">≤ 300.000đ</button>
+                <button type="button" class="opt" data-v="400000" aria-pressed="false">≤ 400.000đ</button>
+                <button type="button" class="opt" data-v="0" aria-pressed="false">Không giới hạn</button>
+              </div>
+              <p class="wq">3. Nhu cầu thêm <small>— chọn tất cả những gì khách cần</small></p>
+              <div class="opts" id="w-needs">
+                <button type="button" class="opt" data-v="tv" aria-pressed="false">Xem truyền hình MyTV</button>
+                <button type="button" class="opt" data-v="cam" aria-pressed="false">Camera an ninh</button>
+                <button type="button" class="opt" data-v="mesh" aria-pressed="false">Wifi phủ rộng (Mesh)</button>
+                <button type="button" class="opt" data-v="mob" aria-pressed="false">Kèm di động cho gia đình</button>
+              </div>
+              <p class="wq">4. Tốc độ Internet mong muốn?</p>
+              <div class="opts" id="w-speed">
+                <button type="button" class="opt" data-v="0" aria-pressed="true">Không quan trọng</button>
+                <button type="button" class="opt" data-v="300" aria-pressed="false">300 Mbps</button>
+                <button type="button" class="opt" data-v="500" aria-pressed="false">500 Mbps</button>
+                <button type="button" class="opt" data-v="1000" aria-pressed="false">1 Gbps trở lên</button>
+              </div>
+              <p class="wq">5. Nhà của khách <small>— dùng để tính số Mesh khuyến nghị theo cẩm nang lắp đặt</small></p>
+              <div class="opts" id="w-house">
+                <button type="button" class="opt" data-v="cc50" aria-pressed="true">Căn hộ/chung cư ≤ 50 m²</button>
+                <button type="button" class="opt" data-v="cc70" aria-pressed="false">Chung cư &lt; 70 m²</button>
+                <button type="button" class="opt" data-v="cc150" aria-pressed="false">Chung cư 70–150 m²</button>
+                <button type="button" class="opt" data-v="cc150p" aria-pressed="false">Chung cư &gt; 150 m²</button>
+                <button type="button" class="opt" data-v="nd60" aria-pressed="false">Nhà đất ≤ 60 m²</button>
+                <button type="button" class="opt" data-v="nd100" aria-pressed="false">Nhà đất ≤ 100 m², ≤ 2 tầng</button>
+                <button type="button" class="opt" data-v="nd604" aria-pressed="false">Nhà đất ≤ 60 m², nhiều tầng (≤ 4)</button>
+                <button type="button" class="opt" data-v="bt" aria-pressed="false">Biệt thự &gt; 100 m²</button>
+              </div>
+            </div>
+
+            <div id="w-dn" hidden>
+              <p class="wq">2. Ngân sách cước mỗi tháng?</p>
+              <div class="opts" id="w-budget-dn">
+                <button type="button" class="opt" data-v="500000" aria-pressed="false">≤ 500.000đ</button>
+                <button type="button" class="opt" data-v="1000000" aria-pressed="true">≤ 1.000.000đ</button>
+                <button type="button" class="opt" data-v="3000000" aria-pressed="false">≤ 3.000.000đ</button>
+                <button type="button" class="opt" data-v="10000000" aria-pressed="false">≤ 10.000.000đ</button>
+                <button type="button" class="opt" data-v="0" aria-pressed="false">Không giới hạn</button>
+              </div>
+              <p class="wq">3. Doanh nghiệp cần gì? <small>— chọn tất cả</small></p>
+              <div class="opts" id="w-needs-dn">
+                <button type="button" class="opt" data-v="iptinh" aria-pressed="false">IP tĩnh (camera/server/VPN)</button>
+                <button type="button" class="opt" data-v="mesh" aria-pressed="false">Wifi phủ rộng (Mesh)</button>
+              </div>
+              <p class="wq">4. Tốc độ trong nước mong muốn?</p>
+              <div class="opts" id="w-speed-dn">
+                <button type="button" class="opt" data-v="0" aria-pressed="true">Không quan trọng</button>
+                <button type="button" class="opt" data-v="400" aria-pressed="false">Từ 400 Mbps</button>
+                <button type="button" class="opt" data-v="600" aria-pressed="false">Từ 600 Mbps</button>
+                <button type="button" class="opt" data-v="1000" aria-pressed="false">Từ 1 Gbps</button>
+              </div>
+            </div>
+
+            <div class="wfoot">
+              <button class="btn" id="w-go" type="button">Xem gói gợi ý</button>
+              <span id="w-hint" style="color:var(--muted);font-size:13px"></span>
+            </div>
+          </div>
+          <div id="w-results"></div>
+        </section>
+
+        <!-- ===== Tab So sánh ===== -->
+        <section class="tabpage" id="page-compare">
+          <div class="page-head">
+            <h1>So sánh gói cước</h1>
+            <p>Chọn tối đa 3 gói bằng nút “+ So sánh” ở mục Gói cước hoặc Tư vấn để đặt cạnh nhau.</p>
+          </div>
+          <div id="cmpArea"></div>
+        </section>
+
+        <!-- ===== Tab Kênh MyTV ===== -->
+        <section class="tabpage" id="page-channels">
+          <div class="page-head">
+            <h1>Kênh MyTV</h1>
+            <p>Tra cứu danh sách kênh truyền hình MyTV theo thể loại và gói cước.</p>
+          </div>
+          <div class="card" style="margin-bottom:14px">
+            <div class="field">
+              <label for="chQ">Tìm kênh</label>
+              <input id="chQ" type="search" placeholder="Tên kênh…" />
+            </div>
+            <div class="two-col">
+              <div class="field">
+                <label for="chCat">Thể loại</label>
+                <select id="chCat"></select>
+              </div>
+              <div class="field">
+                <label for="chPkg">Gói MyTV</label>
+                <select id="chPkg"></select>
+              </div>
+            </div>
+            <button class="btn ghost small" id="chOnly" type="button" aria-pressed="true">Chỉ hiện kênh thuộc gói đã chọn</button>
+          </div>
+          <p class="result-count" id="chCount"></p>
+          <div id="chList" class="stack" style="gap:8px"><div class="loading">Đang tải danh sách kênh…</div></div>
+        </section>
+
+        <!-- ===== Tab Phí & chính sách ===== -->
+        <section class="tabpage" id="page-fees">
+          <div class="page-head">
+            <h1>Phí &amp; chính sách</h1>
+            <p>Phí hòa mạng, pack Mesh, cẩm nang chọn Mesh và các lưu ý bán hàng.</p>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <h2 style="margin:0 0 4px;font-size:16px">Phí hòa mạng (PHM)</h2>
+              <p class="wlead">Giá đã bao gồm VAT</p>
+              <div class="table-scroll"><table class="plain" style="min-width:520px">
+                <tr><th>Đối tượng khách hàng</th><th>Giá cước hòa mạng</th></tr>
+                <tr><td>Khách hàng thông thường đăng ký mới dịch vụ (gói đơn lẻ và tích hợp)</td><td style="font-weight:600;white-space:nowrap">300.000đ/TB</td></tr><tr><td>Khách hàng hiện hữu: thuê bao tạm ngưng PSC khôi phục; thuê bao BRCĐ thanh lý/hủy trong 90 ngày quay lại (khôi phục mã thuê bao cũ); thuê bao có sẵn IMS/MyTV trên cáp quang chuyển đổi đồng → quang; thuê bao đang hoạt động dịch chuyển/chuyển đổi vị trí lắp đặt</td><td style="font-weight:600;white-space:nowrap">0đ</td></tr><tr><td>Khách hàng không ổn định (*): sinh viên thuê trọ (MĐT 361); công nhân KCN thuê trọ (362); người thuê nhà/chung cư mini (360); kinh doanh thuê mặt phố, TTTM (363); kinh doanh mùa vụ, chủ nhà trọ/chung cư mini (364)</td><td style="font-weight:600;white-space:nowrap">300.000đ/TB + bắt buộc đóng trước tối thiểu 6 tháng</td></tr><tr><td>Phí lắp đặt dịch vụ Camera</td><td style="font-weight:600;white-space:nowrap">0đ</td></tr><tr><td>Khách hàng lắp đặt Fiber thuê ngắn ngày (*) — mức giảm tối đa 50%, LĐ VTĐN phê duyệt bằng văn bản</td><td style="font-weight:600;white-space:nowrap">Tối thiểu 2.200.000đ – 5.500.000đ/TB</td></tr><tr><td>Thuê bao dùng thử (VB 716/VNPT-ĐNG-ĐHKD ngày 05/12/2025)</td><td style="font-weight:600;white-space:nowrap">Đặt cọc 300.000đ</td></tr><tr><td>Thuê bao VTCI</td><td style="font-weight:600;white-space:nowrap">0đ</td></tr>
+              </table></div>
+            </div>
+            <div class="card">
+              <h2 style="margin:0 0 4px;font-size:16px">Pack nhiều Mesh (Wifi Mesh 6 add-on)</h2>
+              <p class="wlead">Áp dụng theo VB 716/VNPT ĐNG-ĐHKD, từ 15/04/2026 · Giá đã có 10% VAT · SL = số thiết bị Mesh 6 trong pack, T = tháng</p>
+              <div class="table-scroll"><table class="plain" style="min-width:560px">
+                <tr><th>Gói</th><th>SL</th><th>1T</th><th>3T</th><th>6T</th><th>12/13T</th></tr>
+                <tr><td><b>Pack 1</b></td><td class="v">1</td><td>30.000đ</td><td>90.000đ</td><td>180.000đ</td><td>360.000đ</td></tr><tr><td><b>Pack 2</b></td><td class="v">2</td><td>50.000đ</td><td>150.000đ</td><td>300.000đ</td><td>450.000đ</td></tr><tr><td><b>Pack 3</b></td><td class="v">3</td><td>75.000đ</td><td>225.000đ</td><td>450.000đ</td><td>675.000đ</td></tr><tr><td><b>Pack 4</b></td><td class="v">4</td><td>100.000đ</td><td>300.000đ</td><td>600.000đ</td><td>900.000đ</td></tr><tr><td><b>Pack 5</b></td><td class="v">5</td><td>120.000đ</td><td>360.000đ</td><td>720.000đ</td><td>1.080.000đ</td></tr><tr><td><b>Pack 5*</b></td><td class="v">5 (KHCC, KHDN)</td><td>100.000đ</td><td>300.000đ</td><td>600.000đ</td><td>900.000đ</td></tr><tr><td><b>Pack 6</b></td><td class="v">6</td><td>140.000đ</td><td>420.000đ</td><td>840.000đ</td><td>1.260.000đ</td></tr><tr><td><b>Pack 7</b></td><td class="v">7</td><td>160.000đ</td><td>480.000đ</td><td>960.000đ</td><td>1.440.000đ</td></tr><tr><td><b>Pack 8</b></td><td class="v">8</td><td>180.000đ</td><td>540.000đ</td><td>1.080.000đ</td><td>1.620.000đ</td></tr><tr><td><b>Pack 9</b></td><td class="v">9</td><td>200.000đ</td><td>600.000đ</td><td>1.200.000đ</td><td>1.800.000đ</td></tr><tr><td><b>Pack 10</b></td><td class="v">10</td><td>220.000đ</td><td>660.000đ</td><td>1.320.000đ</td><td>1.980.000đ</td></tr><tr><td><b>Pack 10*</b></td><td class="v">10 (KHCC, KHDN)</td><td>200.000đ</td><td>600.000đ</td><td>1.200.000đ</td><td>1.800.000đ</td></tr>
+              </table></div>
+              <p class="wlead" style="margin-top:8px">Riêng 01 thiết bị Wifi Mesh 6 add-on: 30.000đ/tháng · 90.000đ/3 tháng · 180.000đ/6 tháng · 360.000đ/12-13 tháng.</p>
+            </div>
+            <div class="card">
+              <h2 style="margin:0 0 4px;font-size:16px">Cẩm nang chọn Mesh theo nhà ở</h2>
+              <p class="wlead">Số Mesh tối thiểu khuyến nghị khi triển khai (02 băng tần)</p>
+              <div class="table-scroll"><table class="plain" style="min-width:640px">
+                <tr><th>Loại nhà</th><th>Số tầng</th><th>Số phòng</th><th>Diện tích</th><th>Mesh</th><th>Gói kiến nghị</th></tr>
+                <tr><td>Căn hộ/chung cư</td><td>—</td><td>1 phòng</td><td>≤ 50 m²</td><td>—</td><td><b>Home 1 / Home 2</b></td></tr><tr><td>Chung cư</td><td>—</td><td>≤ 3 phòng</td><td>&lt; 70 m²</td><td>1</td><td><b>Home 1 đến Home 3 (có Mesh)</b></td></tr><tr><td>Chung cư</td><td>—</td><td>≤ 4 phòng</td><td>&lt; 150 m²</td><td>2</td><td><b>Home 1 đến Home 3 (có Mesh) + add-on 1 Mesh</b></td></tr><tr><td>Chung cư</td><td>—</td><td>&gt; 4 phòng</td><td>&gt; 150 m²</td><td>3</td><td><b>Home 1 đến Home 3 (có Mesh) + add-on 2 Mesh</b></td></tr><tr><td>Biệt thự</td><td>—</td><td>—</td><td>&gt; 100 m²</td><td>3</td><td><b>Home 1 đến Home 3 (có Mesh) + add-on 2 Mesh</b></td></tr><tr><td>Nhà đất</td><td>≤ 2 tầng</td><td>—</td><td>≤ 100 m²</td><td>2</td><td><b>Home 1 đến Home 3 (có Mesh) + add-on 1 Mesh</b></td></tr><tr><td>Nhà đất</td><td>≤ 2 tầng</td><td>—</td><td>≤ 60 m²</td><td>1</td><td><b>Home 1 đến Home 3 (có Mesh)</b></td></tr><tr><td>Nhà đất</td><td>≤ 4 tầng</td><td>—</td><td>≤ 60 m²</td><td>2</td><td><b>Home 1 đến Home 3 (có Mesh) + add-on 1 Mesh</b></td></tr><tr><td>Nhà đất</td><td>≤ 3 tầng</td><td>—</td><td>≤ 35 m²</td><td>1</td><td><b>Home 1 đến Home 3 (có Mesh)</b></td></tr>
+              </table></div>
+              <p class="wlead" style="margin-top:8px">Số lượng Mesh có thể cần tăng thêm tùy thuộc diện tích, số phòng và vật cản thực tế.</p>
+            </div>
+            <div class="card">
+              <h2 style="margin:0 0 8px;font-size:16px">Lưu ý bán hàng quan trọng</h2>
+              
+          <ul class="bullets">
+            <li><b>Thiết bị STB:</b> Thành phần MyTV trong các gói tích hợp là MyTV App. Khách cần Set-top-box thì đăng ký add-on STB, thu thêm <b>50.000đ/STB/tháng</b> (VB 2133/QĐ-KHCN-QLSP ngày 24/04/2026, áp dụng từ 10/05/2026). Nếu khách chỉ chọn MyTV App, hệ thống chặn không cấp vật tư STB.</li>
+            <li><b>Bảo mật GreenNet / Family Safe:</b> Khách chọn 1 trong 2 dịch vụ khi đăng ký; sau khi đăng ký không được chuyển đổi giữa 2 dịch vụ trong cùng gói. Gói đã tích hợp GreenNet chỉ được mua thêm add-on Family Safe và ngược lại.</li>
+            <li><b>Dùng thử:</b> Các gói Home Internet / Home TV / Home Cam được dùng thử Fiber 1 tháng; gói có MyTV được dùng thử thêm MyTV 1 tháng (Home Đỉnh, Home Sành không áp dụng dùng thử).</li>
+            <li><b>Tốc độ 500ULM (*):</b> Tối thiểu 500 Mbps, tối đa 1.000 Mbps tùy khoảng cách đến modem, chủng loại thiết bị của khách và điều kiện hạ tầng khu vực.</li>
+            <li><b>IP tĩnh:</b> Các gói Home gia đình không triển khai IP tĩnh. Khách cần IP tĩnh tư vấn gói Fiber doanh nghiệp hoặc add-on IP tĩnh.</li>
+            <li><b>MyTV:</b> Đăng nhập tối đa 5 thiết bị, xem đồng thời 2 thiết bị; xem lại/tua lại 24–72h tùy kênh. Riêng chùm kênh K+: tối đa 3 thiết bị, xem đồng thời 1 thiết bị.</li>
+            <li><b>MyTV S / S1 / S2:</b> Chỉ áp dụng cho thuê bao FiberVNN hiện hữu (hoàn công từ tháng T-1 trở về trước); không áp dụng chuyển đổi từ gói MyTV khác sang 3 gói này; điểm bán: OneBSS, App Employee.</li>
+            <li><b>Phí lắp đặt Camera:</b> 0đ. Thuê bao dùng thử: đặt cọc 300.000đ (VB 716/VNPT-ĐNG-ĐHKD ngày 05/12/2025).</li>
+          </ul>
+        
+            </div>
+            <div class="card">
+              <h2 style="margin:0 0 4px;font-size:16px">Gói hiện hữu chuyển ngang XGSPON</h2>
+              <p class="wlead">56 gói cước cũ được nâng tốc độ khi chuyển ngang sang XGSPON · Giá: nghìn đồng/tháng</p>
+              <div class="field">
+                <label for="xgQ">Tìm tên gói cũ</label>
+                <input id="xgQ" type="search" placeholder="Tìm tên gói cũ: Home Net, Home Chất, HomeTV…" />
+              </div>
+              <div class="table-scroll" id="xgTable"></div>
+            </div>
+          </div>
+        </section>
+
         <!-- ===== Tab KPI ===== -->
         <section class="tabpage" id="page-kpi">
           <div class="page-head">
@@ -456,7 +823,195 @@
             <label for="kpiSel">Chọn chức danh (quản trị viên)</label>
             <select id="kpiSel"></select>
           </div>
+          <div id="kpiModeWrap" hidden style="margin:0 0 12px">
+            <div class="seg" role="tablist" aria-label="Chế độ xem KPI">
+              <button type="button" id="kpiModeAgg" class="on">Tổng hợp</button>
+              <button type="button" id="kpiModePerson">Từng người</button>
+            </div>
+          </div>
+          <div class="field" id="kpiStaffWrap" hidden style="max-width:360px">
+            <label for="kpiStaffSel">Chọn nhân viên</label>
+            <select id="kpiStaffSel"></select>
+          </div>
           <div id="kpiBody"><div class="loading">Đang tải khung KPI…</div></div>
+        </section>
+
+
+        <!-- ===== Tab Cơ chế lương ===== -->
+        <section class="tabpage" id="page-salary">
+          <div class="page-head">
+            <h1>Cơ chế lương</h1>
+            <p>Cơ chế phân phối thu nhập VNPT Đà Nẵng — tra cứu nhanh công thức và ký hiệu.</p>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <h2 style="margin:0 0 8px;font-size:16px">Giới thiệu</h2>
+              <p class="wlead" style="margin:0">Theo Quyết định 2240/QĐ-VNPT-DNG-NSTH ngày 01/10/2026, áp dụng từ 01/9/2026 (thay thế QĐ 1076/QĐ-VNPT-DNG-NSTH ngày 01/4/2026). Khung KPI theo tháng xem ở tab KPI.</p>
+            </div>
+            <div class="card">
+              <h2 style="margin:0 0 8px;font-size:16px">Nguyên tắc chung (áp dụng toàn VNPT Đà Nẵng)</h2>
+              
+          <ul class="bullets">
+            <li><b>Trả lương theo phương pháp 3P:</b> P1 — vị trí công việc, P2 — năng lực cá nhân, P3 — kết quả thực hiện công việc. Kết quả P3 được đánh giá qua <b>hệ số BSC cá nhân (H<sub>BSC-cn</sub>)</b> hoặc hệ số chất lượng công tác, hệ số thu nợ (nếu có) và sản lượng cá nhân.</li>
+            <li><b>Lương kế hoạch cá nhân:</b> L<sub>khcn</sub> = ĐG<sub>P1</sub> × P1<sub>cn</sub> (đơn giá P1 nhân hệ số P1 của cá nhân). Lương kế hoạch tập thể = tổng lương kế hoạch của các cá nhân trong tập thể.</li>
+            <li><b>Quỹ tiền lương:</b> hình thành từ tiền lương theo kế hoạch SXKD năm, tiền lương bổ sung theo kết quả BSC/OKR và các nguồn quỹ khác của Tập đoàn. Trích không quá <b>5%</b> quỹ lương kế hoạch lập Quỹ lương khuyến khích (thi đua, khen thưởng đột xuất, thu hút/giữ chân lao động giỏi) và không quá <b>5%</b> lập Quỹ lương dự phòng.</li>
+            <li><b>6 nhóm tính lương:</b> Nhóm I — Trung tâm Viễn thông (Phụ lục 1) · Nhóm II — VNPT khu vực (Phụ lục 2) · Nhóm III — Trung tâm Hạ tầng (Phụ lục 3) · Nhóm IV — Phòng chức năng &amp; Lãnh đạo VNPT Đà Nẵng (Phụ lục 4) · Nhóm V — Trung tâm CSKH (Phụ lục 5) · Nhóm VI — Trung tâm Kinh doanh Giải pháp (Phụ lục 6).</li>
+            <li><b>Thời hạn trả lương:</b> lương tính theo tháng, chi trả chậm nhất ngày <b>25 của tháng sau liền kề</b> (trùng ngày nghỉ thì chuyển sang ngày làm việc liền kề); phần lương còn lại quyết toán và chi trả trước ngày <b>31/3</b> của năm liền kề.</li>
+            <li><b>Lương duy trì:</b> L<sub>đt</sub> = L<sub>đtkh</sub> × H<sub>nc</sub>, trong đó L<sub>đtkh</sub> (lương duy trì kế hoạch) = Lương kế hoạch − Lương đơn giá kế hoạch; H<sub>nc</sub> = số ngày công thực tế / số ngày công chuẩn trong tháng.</li>
+            <li><b>Đơn giá lương</b> các nhóm dịch vụ BRCĐ/MyTV/Mesh/Camera/ĐTCĐ, di động, thu cước, dịch vụ số: áp dụng theo đơn giá hiện hành của VNPT Đà Nẵng. Lương khoán thuê bao rời mạng: theo quy định hiện hành của VNPT Đà Nẵng.</li>
+          </ul>
+        
+            </div>
+            <div class="card">
+              <h2 style="margin:0 0 8px;font-size:16px">Công thức lương theo nhóm lao động</h2>
+              <div class="tablebox">
+            <h3>Nhân viên Kinh doanh địa bàn <span class="ktag">Mã VTCV: VTT_VNPTKV_04</span><span class="ktag">Phụ lục 2 — Nhóm II (VNPT khu vực)</span></h3>
+            <p class="sub">Lao động trực tiếp quản lý ô địa bàn. Lương kế hoạch được xác định, điều chỉnh theo từng thời kỳ và mục tiêu quản trị của lãnh đạo VNPT Đà Nẵng.</p>
+            <div class="formula"><span class="fl">Lương tháng cá nhân</span>L<sub>CNa</sub> = L<sub>3Pcn</sub> + L<sub>k</sub> − L<sub>gtk</sub></div>
+            <div class="formula"><span class="fl">Lương 3P trực tiếp — khi L<sub>đt</sub> + L<sub>đg</sub> + L<sub>tc</sub> ≤ L<sub>khcn</sub></span>L<sub>3Pcn</sub> = (L<sub>đt</sub> + L<sub>đg</sub> + L<sub>tc</sub> + L<sub>ktbrm</sub>) × H<sub>BSC-cn</sub> × H<sub>tn</sub> + L<sub>kk</sub></div>
+            <div class="formula"><span class="fl">Lương 3P trực tiếp — khi L<sub>đt</sub> + L<sub>đg</sub> + L<sub>tc</sub> &gt; L<sub>khcn</sub></span>L<sub>3Pcn</sub> = (L<sub>khcn</sub> + L<sub>ktbrm</sub>) × H<sub>BSC-cn</sub> × H<sub>tn</sub> + [(L<sub>đt</sub> + L<sub>đg</sub> + L<sub>tc</sub>) − L<sub>khcn</sub>] + L<sub>kk</sub></div>
+            <ul class="bullets">
+              <li><b>L<sub>đt</sub></b> — lương duy trì: chi trả cho công tác CSKH, duy trì giữ thuê bao và doanh thu hiện hữu trên địa bàn/tập khách hàng được giao.</li>
+              <li><b>L<sub>đg</sub></b> — lương đơn giá phát triển mới các dịch vụ, đã giảm trừ thuê bao rời mạng.</li>
+              <li><b>L<sub>tc</sub></b> — lương thu cước. <b>L<sub>ktbrm</sub></b> — lương khoán thuê bao rời mạng (nếu có). <b>L<sub>kk</sub></b> — lương hòa mạng, khuyến khích phát triển dịch vụ.</li>
+              <li><b>L<sub>gtk</sub></b> — lương giảm trừ khác (nếu có), ví dụ giảm trừ khi không thu được nợ của khách hàng.</li>
+            </ul>
+          </div>
+<div class="tablebox">
+            <h3>Nhân viên Kỹ thuật địa bàn <span class="ktag">Mã VTCV: VTT_VTKV_04</span><span class="ktag">Phụ lục 1 — Nhóm I (Trung tâm Viễn thông)</span></h3>
+            <p class="sub">Lao động trực tiếp quản lý ô địa bàn tại Trung tâm Viễn thông. NVKT địa bàn đa nhiệm tạm thời được giao quản lý ô địa bàn áp dụng cơ chế này và giữ nguyên hệ số P1.</p>
+            <div class="formula"><span class="fl">Lương tháng cá nhân</span>L<sub>CNa</sub> = L<sub>3Pcn</sub> + L<sub>k</sub> − L<sub>gtk</sub></div>
+            <div class="formula"><span class="fl">Lương 3P trực tiếp — khi L<sub>đt</sub> + L<sub>đg</sub> + L<sub>lđ</sub> + L<sub>tc</sub> ≤ L<sub>khcn</sub></span>L<sub>3Pcn</sub> = (L<sub>đt</sub> + L<sub>đg</sub> + L<sub>lđ</sub> + L<sub>tc</sub> + L<sub>ktbrm</sub>) × H<sub>BSC-cn</sub> × H<sub>tn</sub> + L<sub>kk</sub></div>
+            <div class="formula"><span class="fl">Lương 3P trực tiếp — khi tổng trên &gt; L<sub>khcn</sub></span>L<sub>3Pcn</sub> = (L<sub>khcn</sub> + L<sub>ktbrm</sub>) × H<sub>BSC-cn</sub> × H<sub>tn</sub> + [(L<sub>đt</sub> + L<sub>đg</sub> + L<sub>lđ</sub> + L<sub>tc</sub>) − L<sub>khcn</sub>] + L<sub>kk</sub></div>
+            <ul class="bullets">
+              <li>Khác NVKD địa bàn ở thành phần <b>L<sub>lđ</sub></b> — lương đơn giá lắp đặt các dịch vụ (và giảm trừ thuê bao rời mạng).</li>
+              <li><b>L<sub>gtk</sub></b> — lương giảm trừ khác (nếu có), ví dụ giảm trừ khi không thu hồi được thiết bị.</li>
+            </ul>
+          </div>
+<div class="tablebox">
+            <h3>Giao dịch viên &amp; Cửa hàng trưởng <span class="ktag">GDV: VTT_VNPTKV_10</span><span class="ktag">CH trưởng: VTT_VNPTKV_09</span><span class="ktag">Phụ lục 2 — Nhóm II</span></h3>
+            <p class="sub">Thuộc nhóm lao động trực tiếp tại VNPT khu vực, áp dụng cùng công thức lương 3P trực tiếp như NVKD địa bàn (thành phần L<sub>đt</sub> + L<sub>đg</sub> + L<sub>tc</sub> so với L<sub>khcn</sub>, nhân H<sub>BSC-cn</sub> và H<sub>tn</sub>, cộng L<sub>kk</sub>).</p>
+            <div class="formula"><span class="fl">Lương tháng cá nhân</span>L<sub>CNa</sub> = L<sub>3Pcn</sub> + L<sub>k</sub> − L<sub>gtk</sub></div>
+          </div>
+<div class="tablebox">
+            <h3>Nhân viên Quản lý kênh <span class="ktag">Mã VTCV: VTT_VNPTKV_05</span><span class="ktag">Phụ lục 2 — Nhóm II</span></h3>
+            <p class="sub">Thuộc nhóm lao động trực tiếp tại VNPT khu vực, áp dụng cùng công thức lương 3P trực tiếp như NVKD địa bàn.</p>
+            <div class="formula"><span class="fl">Lương tháng cá nhân</span>L<sub>CNa</sub> = L<sub>3Pcn</sub> + L<sub>k</sub> − L<sub>gtk</sub></div>
+          </div>
+<div class="tablebox">
+            <h3>Chuyên viên Kinh doanh Khách hàng Doanh nghiệp (AM) <span class="ktag">Mã VTCV: VTT_VNPTKV_12</span><span class="ktag">Phụ lục 2 — Nhóm II · Phụ lục 6 — Nhóm VI</span></h3>
+            <p class="sub">AM thuộc nhóm lao động trực tiếp tại VNPT khu vực và thuộc đối tượng của Trung tâm Kinh doanh Giải pháp.</p>
+            <div class="formula"><span class="fl">AM quản lý tập khách hàng — lương tháng</span>L<sub>CNa</sub> = L<sub>3Pcn</sub> + L<sub>k</sub> − L<sub>gtk</sub> (L<sub>3Pcn</sub> theo công thức 3P trực tiếp như NVKD địa bàn, với L<sub>khcn</sub> là lương kế hoạch theo vị trí AM)</div>
+            <div class="formula"><span class="fl">AM thuộc nhóm dự án — lương tháng</span>L<sub>CNa</sub> = L<sub>nv</sub> + L<sub>đg</sub> − L<sub>gtk</sub> + L<sub>k</sub>,&nbsp; trong đó L<sub>nv</sub> = L<sub>khcn</sub> × A% × TLHTĐG<sub>vtt</sub> × H<sub>BSC-cn</sub> × H<sub>tn</sub> × H<sub>nc</sub></div>
+            <ul class="bullets">
+              <li><b>L<sub>nv</sub></b> — lương nhiệm vụ, gắn với công việc trực tiếp không đo lường bằng đơn giá. <b>A%</b> — tỷ trọng hưởng lương theo nhiệm vụ, điều chỉnh theo mục tiêu quản trị từng thời kỳ. <b>TLHTĐG<sub>vtt</sub></b> — tỷ lệ hoàn thành lương đơn giá của toàn VNPT Đà Nẵng.</li>
+            </ul>
+          </div>
+<div class="tablebox">
+            <h3>Tổ trưởng Tổ Kinh doanh địa bàn &amp; Tổ trưởng Tổ Kinh doanh KHDN <span class="ktag">Phụ lục 2 — Mục II</span></h3>
+            <div class="formula"><span class="fl">Lương tháng cá nhân</span>L<sub>CNa</sub> = L<sub>nv</sub> + L<sub>đg</sub> − L<sub>gtk</sub> + L<sub>k</sub></div>
+            <div class="formula"><span class="fl">Lương nhiệm vụ</span>L<sub>nv</sub> = L<sub>khcn</sub> × A% × TLHTĐG<sub>nhomj</sub> × H<sub>BSC-cn</sub> × H<sub>nc</sub></div>
+            <ul class="bullets">
+              <li><b>L<sub>nv</sub></b> — lương nhiệm vụ gắn với trách nhiệm quản lý, điều hành. <b>A%</b> — tỷ trọng hưởng lương theo nhiệm vụ, xác định/điều chỉnh theo mục tiêu quản trị của Lãnh đạo VNPT Đà Nẵng từng thời kỳ.</li>
+              <li><b>TLHTĐG<sub>nhomj</sub></b> — tỷ lệ hoàn thành lương đơn giá của các lao động trực tiếp thuộc nhóm j = Σ lương đơn giá thực hiện (không gồm lương hòa mạng/khuyến khích) + lương khoán thuê bao rời mạng + 50% lương hoàn thành dự án, chia cho Σ lương đơn giá kế hoạch của nhóm.</li>
+              <li>Tổ trưởng Tổ Kinh doanh địa bàn được giao quản lý ô địa bàn thì áp dụng cơ chế lương như NVKD địa bàn và <b>hệ số P1 được tăng 1 mức</b> so với Tổ trưởng không quản lý ô.</li>
+              <li>Kế hoạch cơ bản tháng 10/2026: Tổ trưởng KD địa bàn — Fiber 1 TB, MyTV 1 TB, Mesh+Cam 3 TB, doanh thu di động 3,5 triệu đồng/tháng. Tổ trưởng KD KHDN — Fiber 1 TB, MyTV 1 TB, Mesh+Cam 3 TB, doanh thu di động 1,5 triệu đồng/tháng.</li>
+            </ul>
+          </div>
+<div class="tablebox">
+            <h3>Nhân viên Chăm sóc khách hàng tại nhà (B2A) <span class="ktag">Phụ lục 1 &amp; 2</span></h3>
+            <div class="formula"><span class="fl">Lương tháng cá nhân</span>L<sub>CNa</sub> = L<sub>đg</sub> − L<sub>gtk</sub> + L<sub>k</sub></div>
+            <ul class="bullets">
+              <li>B2A hưởng lương thuần theo <b>đơn giá phát triển mới các dịch vụ</b> (đã giảm trừ thuê bao rời mạng, theo quy định hiện hành của VNPT Đà Nẵng), cộng lương khác, trừ giảm trừ — không áp dụng lương 3P và lương duy trì như các VTCV trực tiếp khác.</li>
+              <li>Kế hoạch cơ bản tháng 10/2026: Fiber 1 thuê bao, MyTV Fix 1 thuê bao, Mesh + Camera 3 thuê bao, doanh thu bán hàng di động 2 triệu đồng/tháng.</li>
+            </ul>
+          </div>
+<div class="tablebox">
+            <h3>Lao động gián tiếp &amp; trực tiếp không gán địa bàn <span class="ktag">Phụ lục 1, 2 &amp; 4</span></h3>
+            <p class="sub">Áp dụng tại Trung tâm Viễn thông, VNPT khu vực và các Phòng/ban chức năng + Lãnh đạo VNPT Đà Nẵng (không gồm Giám đốc VNPT Đà Nẵng) — trừ NV CSKH tại nhà (B2A).</p>
+            <div class="formula"><span class="fl">Lương tháng cá nhân</span>L<sub>CNa</sub> = L<sub>3Pcn</sub> + L<sub>đg</sub> − L<sub>gtk</sub> + L<sub>k</sub></div>
+            <div class="formula"><span class="fl">Lương 3P gián tiếp (TTVT / VNPT khu vực)</span>L<sub>3Pcn</sub> = [x% × L<sub>khcn</sub> + y% × L<sub>khcn</sub> × TLHTĐG<sub>đbj</sub>] × H<sub>BSC-cn</sub> × H<sub>tn</sub> × H<sub>nc</sub></div>
+            <div class="formula"><span class="fl">Lương 3P gián tiếp (Phòng chức năng — Phụ lục 4)</span>L<sub>3Pcn</sub> = [x% × L<sub>khcn</sub> + y% × L<sub>khcn</sub> × TLHTĐG<sub>vtt</sub>] × H<sub>BSC-cn</sub> × H<sub>nc</sub></div>
+            <ul class="bullets">
+              <li><b>x%</b> — tỷ trọng lương duy trì bình quân của các lao động trực tiếp thuộc địa bàn j (với Phòng chức năng: bình quân toàn VNPT Đà Nẵng). <b>y% = 100% − x%</b> — tỷ trọng lương đơn giá.</li>
+              <li><b>TLHTĐG<sub>đbj</sub></b> — tỷ lệ hoàn thành lương đơn giá của lao động trực tiếp địa bàn j; <b>TLHTĐG<sub>vtt</sub></b> — của toàn VNPT Đà Nẵng (tử số gồm lương khoán thuê bao rời mạng + 50% lương hoàn thành dự án của lao động trực tiếp).</li>
+            </ul>
+          </div>
+<div class="tablebox">
+            <h3>VTCV tại các Tổ Hạ tầng — Trung tâm Hạ tầng <span class="ktag">Phụ lục 3 — Nhóm III</span></h3>
+            <div class="formula"><span class="fl">Lương tháng cá nhân</span>L<sub>CNa</sub> = L<sub>3Pcn</sub> + L<sub>đg</sub> + L<sub>k</sub> − L<sub>gtk</sub></div>
+            <div class="formula"><span class="fl">Lương 3P cá nhân</span>L<sub>3Pcn</sub> = [x% × L<sub>khcn</sub> + y% × L<sub>khcn</sub> × TLHTĐG<sub>đbj</sub>] × H<sub>clct</sub> × H<sub>nc</sub></div>
+            <ul class="bullets">
+              <li>Khối Hạ tầng dùng <b>H<sub>clct</sub> — hệ số chất lượng công tác</b> thay cho hệ số BSC cá nhân.</li>
+              <li>x% — tỷ trọng lương duy trì bình quân của lao động trực tiếp địa bàn j; y% = 100% − x% — tỷ trọng lương đơn giá; TLHTĐG<sub>đbj</sub> tính như các nhóm trực tiếp địa bàn cấp 2.</li>
+            </ul>
+          </div>
+<div class="tablebox">
+            <h3>VTCV tại Trung tâm Chăm sóc khách hàng <span class="ktag">Phụ lục 5 — Nhóm V</span></h3>
+            <div class="formula"><span class="fl">Nhân viên có lương nhiệm vụ</span>L<sub>nv</sub> = L<sub>khcn</sub> × A% × TLHTĐG<sub>cskh</sub> × H<sub>BSC-cn</sub> × H<sub>nc</sub></div>
+            <div class="formula"><span class="fl">Ban Giám đốc Trung tâm CSKH — lương tháng</span>L<sub>CNa</sub> = L<sub>3Pcn</sub> + L<sub>đg</sub> − L<sub>gtk</sub> + L<sub>k</sub>,&nbsp; với L<sub>3Pcn</sub> = [x% × L<sub>khcn</sub> + y% × L<sub>khcn</sub> × TLHTĐG<sub>bpj/cskh</sub>] × H<sub>BSC-cn</sub> × H<sub>nc</sub></div>
+            <ul class="bullets">
+              <li><b>TLHTĐG<sub>cskh</sub></b> — tỷ lệ hoàn thành lương đơn giá của Trung tâm CSKH = Σ lương đơn giá thực hiện của lao động trực tiếp TT CSKH / Σ lương đơn giá kế hoạch tương ứng.</li>
+              <li>x% với BGĐ TT CSKH là tỷ trọng lương duy trì bình quân của nhân viên lao động trực tiếp bộ phận j/Trung tâm CSKH.</li>
+            </ul>
+          </div>
+<div class="tablebox">
+            <h3>Trung tâm Kinh doanh Giải pháp — các VTCV còn lại <span class="ktag">Phụ lục 6 — Nhóm VI</span></h3>
+            <div class="formula"><span class="fl">Chuyên viên Tư vấn Giải pháp — lương nhiệm vụ</span>L<sub>nv</sub> = L<sub>khcn</sub> × A% × TLHTĐG<sub>AM</sub> × H<sub>BSC-cn</sub> × H<sub>nc</sub>;&nbsp; L<sub>CNa</sub> = L<sub>nv</sub> + L<sub>đg</sub> − L<sub>gtk</sub> + L<sub>k</sub></div>
+            <div class="formula"><span class="fl">Nhân viên Hỗ trợ Kinh doanh (AS) — lương 3P</span>L<sub>3Pcn</sub> = (x% × L<sub>khcn</sub> + y% × L<sub>khcn</sub> × TLHTĐG<sub>đb/nhomj</sub>) × H<sub>BSC-cn</sub> × H<sub>tn</sub> × H<sub>nc</sub>;&nbsp; L<sub>CNa</sub> = L<sub>3Pcn</sub> + L<sub>đg</sub> − L<sub>gtk</sub> + L<sub>k</sub></div>
+            <div class="formula"><span class="fl">VTCV còn lại thuộc TTKDGP — lương 3P</span>L<sub>3Pcn</sub> = [x% × L<sub>khcn</sub> + y% × L<sub>khcn</sub> × (A% × TLHTĐG<sub>vtt</sub> + B% × TLHTĐG<sub>nhomj</sub>)] × H<sub>BSC-cn</sub> × H<sub>tn</sub> × H<sub>nc</sub></div>
+            <ul class="bullets">
+              <li><b>TLHTĐG<sub>AM</sub></b> — tỷ lệ hoàn thành lương đơn giá của các AM trên toàn VNPT Đà Nẵng. Với AS: TLHTĐG tính theo địa bàn/nhóm j mà AS được phân công hỗ trợ.</li>
+              <li>A% + B% = 100%. BGĐ TTKDGP và Giám đốc Phòng KHDN phụ trách nhóm dự án/nhóm bán hàng nào thì hưởng theo TLHTĐG của nhóm đó; BGĐ phụ trách chung, phụ trách Phòng Giải pháp và các VTCV còn lại: A% = 100%.</li>
+              <li>Quản lý nhóm tại TTKDGP hưởng lương nhiệm vụ: L<sub>nv</sub> = L<sub>khcn</sub> × A% × TLHTĐG<sub>nhomj</sub> × H<sub>BSC-cn</sub> × H<sub>nc</sub>.</li>
+            </ul>
+          </div>
+            </div>
+            <div class="card">
+              <h2 style="margin:0 0 8px;font-size:16px">Các khoản lương khác &amp; trường hợp đặc biệt</h2>
+              
+          <ul class="bullets">
+            <li><b>Thử việc:</b> trả theo thỏa thuận trong hợp đồng, tối thiểu không thấp hơn 85% mức lương theo chức danh đóng BHXH.</li>
+            <li><b>Làm thêm ngoài giờ:</b> chi trả theo quy định pháp luật lao động, dùng tiền lương 3P thực hiện trong tháng làm cơ sở chi trả.</li>
+            <li><b>Làm việc ban đêm (22h–6h):</b> trả thêm ít nhất 30% — L<sub>bđ</sub> = [(L<sub>3Pcn</sub>/T<sub>c</sub>) × 30%] × T<sub>bđ</sub> (T<sub>c</sub>: tổng giờ làm việc thực tế trong tháng; T<sub>bđ</sub>: tổng thời gian làm đêm).</li>
+            <li><b>Cử đi công tác/đào tạo ≤ 30 ngày/đợt:</b> lao động gián tiếp hưởng như làm việc tại đơn vị (100% lương 3P); lao động trực tiếp (từ 5 ngày trở lên) được bù lương đơn giá theo mức bình quân những ngày thực tế làm việc. <b>Từ 31 ngày trở lên:</b> hưởng 100% tiền lương làm cơ sở đóng BHXH, xét thêm lương khuyến khích theo kết quả học tập/nhiệm vụ.</li>
+            <li><b>Nghỉ phép năm, lễ, Tết, nghỉ việc riêng có hưởng lương:</b> hưởng theo mức lương đóng BHXH trong thời gian nghỉ. Nghỉ việc riêng không hưởng lương: không hưởng tiền lương. Nghỉ ốm, thai sản: hưởng chế độ BHXH theo quy định.</li>
+            <li><b>Điều động đến đơn vị khác:</b> hưởng lương tại đơn vị tiếp nhận theo chức danh/mức lương công việc mới; điều động không tròn tháng thì đơn vị cũ chấm công, đánh giá KPI/BSC phần thời gian làm việc rồi chuyển kết quả cho đơn vị mới tổng hợp.</li>
+            <li><b>Nghỉ điều trị tai nạn lao động:</b> trả đủ 100% tiền lương theo hợp đồng (mức lương làm cơ sở đóng BHXH).</li>
+            <li><b>Phụ cấp kiêm nhiệm (PCKN):</b> áp dụng khi kiêm nhiệm công tác Đảng, Công đoàn, Đoàn Thanh niên hoặc nhiệm vụ chưa tính trong định giá công việc; kiêm nhiệm nhiều chức danh chỉ hưởng 1 mức cao nhất (theo Bảng PCKN tại Phụ lục 07 của Quy chế); nghỉ làm việc liên tục từ 1 tháng trở lên thì không hưởng PCKN trong thời gian nghỉ.</li>
+            <li><b>Lương dự phòng, lương còn lại, thưởng tập trung của Tập đoàn:</b> phân phối theo hướng dẫn của Giám đốc VNPT Đà Nẵng căn cứ hướng dẫn của Tập đoàn và tình hình SXKD từng thời điểm.</li>
+          </ul>
+        
+            </div>
+            <div class="card">
+              <h2 style="margin:0 0 8px;font-size:16px">Tra cứu ký hiệu trong công thức</h2>
+              
+          <table class="plain">
+            <tr><th>Ký hiệu</th><th>Ý nghĩa</th></tr>
+            <tr><td><b>L<sub>CNa</sub></b></td><td>Tiền lương của cá nhân a trong tháng</td></tr>
+            <tr><td><b>L<sub>khcn</sub></b></td><td>Lương kế hoạch theo VTCV của cá nhân = ĐG<sub>P1</sub> × P1<sub>cn</sub></td></tr>
+            <tr><td><b>L<sub>3Pcn</sub></b></td><td>Tiền lương 3P của cá nhân</td></tr>
+            <tr><td><b>L<sub>đt</sub></b></td><td>Lương duy trì (CSKH, giữ thuê bao, doanh thu hiện hữu trên địa bàn/tập KH được giao)</td></tr>
+            <tr><td><b>L<sub>đg</sub></b></td><td>Lương đơn giá phát triển mới các dịch vụ, giảm trừ thuê bao rời mạng</td></tr>
+            <tr><td><b>L<sub>lđ</sub></b></td><td>Lương đơn giá lắp đặt các dịch vụ (NVKT địa bàn)</td></tr>
+            <tr><td><b>L<sub>tc</sub></b></td><td>Lương thu cước</td></tr>
+            <tr><td><b>L<sub>ktbrm</sub></b></td><td>Lương khoán thuê bao rời mạng</td></tr>
+            <tr><td><b>L<sub>kk</sub></b></td><td>Lương hòa mạng, khuyến khích phát triển dịch vụ</td></tr>
+            <tr><td><b>L<sub>nv</sub></b></td><td>Lương nhiệm vụ (quản lý, điều hành, công việc không đo bằng đơn giá)</td></tr>
+            <tr><td><b>L<sub>k</sub></b></td><td>Lương khác: khuyến khích, thêm giờ, lễ Tết, nghỉ phép…</td></tr>
+            <tr><td><b>L<sub>gtk</sub></b></td><td>Lương giảm trừ khác (nếu có)</td></tr>
+            <tr><td><b>H<sub>BSC-cn</sub></b></td><td>Hệ số BSC cá nhân — phản ánh kết quả thực hiện công việc của cá nhân</td></tr>
+            <tr><td><b>H<sub>tn</sub></b></td><td>Hệ số thu nợ (nếu có)</td></tr>
+            <tr><td><b>H<sub>nc</sub></b></td><td>Hệ số ngày công = ngày công thực tế / ngày công chuẩn trong tháng</td></tr>
+            <tr><td><b>H<sub>clct</sub></b></td><td>Hệ số chất lượng công tác (khối Hạ tầng)</td></tr>
+            <tr><td><b>TLHTĐG</b></td><td>Tỷ lệ hoàn thành lương đơn giá = Σ lương đơn giá thực hiện / Σ lương đơn giá kế hoạch (theo địa bàn, nhóm, trung tâm hoặc toàn VNPT Đà Nẵng tùy công thức)</td></tr>
+            <tr><td><b>MĐHT / TLHT / KQTH</b></td><td>Mức độ hoàn thành KPI / tỷ lệ hoàn thành / kết quả thực hiện của chỉ tiêu</td></tr>
+            <tr><td><b>x% / y% / A% / B%</b></td><td>Tỷ trọng lương duy trì / lương đơn giá (y% = 100% − x%) / tỷ trọng lương theo nhiệm vụ và theo TLHTĐG (A% + B% = 100%)</td></tr>
+          </table>
+          <p class="src">Nguồn: Quyết định 2240/QĐ-VNPT-DNG-NSTH ngày 01/10/2026 của VNPT Đà Nẵng (hiệu lực từ 01/9/2026) và bộ tài liệu khung KPI/OKR + hướng dẫn đánh giá BSC cá nhân tháng 10/2026 (Phụ lục 1–5 và Phụ lục 6 theo từng VTCV). Nội dung trên là bản tóm tắt để tra cứu nhanh; trường hợp cần đối chiếu chính thức, lấy văn bản gốc làm căn cứ.</p>
+        
+            </div>
+          </div>
         </section>
 
         <!-- ===== Tab Tôi ===== -->
@@ -559,6 +1114,14 @@
 
       <nav class="bottomnav" id="bottomNav" aria-label="Điều hướng chính"></nav>
     </div>
+
+    <!-- ============ Thanh so sánh nổi ============ -->
+    <div class="cmpbar" id="cmpBar">
+      <span id="cmpBarTxt"></span>
+      <button class="go" id="cmpBarGo" type="button">Xem so sánh</button>
+      <button class="clr" id="cmpBarClear" type="button">Xóa</button>
+    </div>
+    <div class="toast" id="toast"></div>
 
     <!-- ============ Package detail modal ============ -->
     <div class="modal-back" id="modalBack">
@@ -765,7 +1328,12 @@
 
       var ICONS = {
         packages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 15.5a5.5 5.5 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg>',
+        advise: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16v9H9.5L4 18z"/><path d="M9 9.5h6"/><path d="M9 12.5h4"/></svg>',
+        compare: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="4" width="7" height="16" rx="1"/><rect x="13" y="4" width="7" height="16" rx="1"/></svg>',
+        channels: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M9 21h6"/></svg>',
+        fees: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4h7l9 9-7 7-9-9z"/><circle cx="9" cy="9" r="1.4"/></svg>',
         kpi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>',
+        salary: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><rect x="3" y="7" width="18" height="12" rx="2"/><circle cx="16.5" cy="13" r="1.2" fill="currentColor" stroke="none"/></svg>',
         me: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>',
         admin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><path d="M9.5 12l2 2 3.5-4"/></svg>'
       };
@@ -775,8 +1343,15 @@
         profile: null,
         packages: [],
         packagesLoaded: false,
+        channels: [],
+        channelsLoaded: false,
+        cmpSet: new Set(),
         kpiFrames: [],
         kpiLoaded: false,
+        kpiProg: {},
+        kpiProfiles: [],
+        kpiAdminMode: "agg",
+        kpiStaffId: "",
         salaries: [],
         salariesLoaded: false,
         filters: { q: "", grp: "all", from: null, to: null, speed: 0, needs: {}, sort: "price-asc" },
@@ -958,7 +1533,12 @@
       /* ================= Shell / tabs ================= */
       var TABS = [
         { id: "packages", label: "Gói cước" },
+        { id: "advise", label: "Tư vấn" },
+        { id: "compare", label: "So sánh" },
+        { id: "channels", label: "Kênh MyTV" },
+        { id: "fees", label: "Phí & chính sách" },
         { id: "kpi", label: "KPI" },
+        { id: "salary", label: "Cơ chế lương" },
         { id: "me", label: "Tôi" },
         { id: "admin", label: "Quản trị", adminOnly: true }
       ];
@@ -983,8 +1563,13 @@
         var btns = document.querySelectorAll("[data-tab]");
         for (var j = 0; j < btns.length; j++) btns[j].classList.toggle("active", btns[j].getAttribute("data-tab") === id);
         if (id === "packages") loadPackages();
+        if (id === "advise") loadPackages();
+        if (id === "compare") renderCompare();
+        if (id === "channels") loadChannels();
+        if (id === "fees") renderXg();
         if (id === "kpi") loadKpi();
         if (id === "me") loadSalaries();
+        updateCmpBar();
         window.scrollTo(0, 0);
       }
 
@@ -1004,8 +1589,8 @@
       }
 
       /* ================= Packages ================= */
-      function loadPackages() {
-        if (state.packagesLoaded) return;
+      function loadPackages(cb) {
+        if (state.packagesLoaded) { if (cb) cb(); return; }
         restSelect("packages", { order: { col: "price_m1", asc: true } }).then(function (res) {
           if (res.error) {
             $("pkgList").innerHTML = '<div class="empty">Không tải được danh sách gói cước. Vui lòng thử lại sau.</div>';
@@ -1015,6 +1600,7 @@
           state.packages = res.data || [];
           state.packagesLoaded = true;
           renderPackages();
+          if (cb) cb();
         });
       }
 
@@ -1072,27 +1658,8 @@
           return;
         }
         $("pkgList").innerHTML = '<div class="pkg-grid">' + list.map(function (p) {
-          var metas = [];
-          if (p.speed_label) metas.push(esc(p.speed_label));
-          else if (p.speed_mbps) metas.push(esc(p.speed_mbps >= 1000 ? (p.speed_mbps / 1000) + " Gbps" : p.speed_mbps + " Mbps"));
-          if (Number(p.mesh_packs) > 0) metas.push("Mesh x" + p.mesh_packs);
-          if (p.has_tv) metas.push("Truyền hình");
-          if (p.has_cam) metas.push("Camera");
-          if (p.has_mob) metas.push("Di động");
-          if (p.has_ipt) metas.push("IP tĩnh");
-          var feats = Array.isArray(p.features) ? p.features.slice(0, 3) : [];
-          return '<button type="button" class="pkg-card" data-pkg="' + esc(p.id) + '">' +
-            '<span class="pkg-top"><span class="pkg-name">' + esc(p.name) + '</span>' +
-            '<span class="tag' + (p.grp === "dn" ? " dn" : "") + '">' + (p.grp === "dn" ? "Doanh nghiệp" : "Cá nhân") + "</span></span>" +
-            '<span class="pkg-price">' + fmtVND(p.price_m1) + " <small>/ tháng</small></span>" +
-            (metas.length ? '<span class="pkg-meta">' + metas.map(function (m) { return "<span>" + m + "</span>"; }).join("") + "</span>" : "") +
-            (feats.length ? '<ul class="pkg-feats">' + feats.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
-            "</button>";
+          return pkgCardHTML(p);
         }).join("") + "</div>";
-        var cards = document.querySelectorAll("[data-pkg]");
-        for (var i = 0; i < cards.length; i++) {
-          cards[i].addEventListener("click", function () { openPkgDetail(this.getAttribute("data-pkg")); });
-        }
       }
 
       function openPkgDetail(id) {
@@ -1198,9 +1765,347 @@
         renderPackages();
       });
 
+
+      /* ================= So sánh ================= */
+      function findPkg(id) {
+        for (var i = 0; i < state.packages.length; i++) {
+          if (String(state.packages[i].id) === String(id)) return state.packages[i];
+        }
+        return null;
+      }
+      /* Thẻ gói dùng chung cho trang Gói cước và kết quả Tư vấn */
+      function pkgCardHTML(p, extra) {
+        var metas = [];
+        if (p.speed_label) metas.push(esc(p.speed_label));
+        else if (p.speed_mbps) metas.push(esc(p.speed_mbps >= 1000 ? (p.speed_mbps / 1000) + " Gbps" : p.speed_mbps + " Mbps"));
+        if (Number(p.mesh_packs) > 0) metas.push("Mesh x" + p.mesh_packs);
+        if (p.has_tv) metas.push("Truyền hình");
+        if (p.has_cam) metas.push("Camera");
+        if (p.has_mob) metas.push("Di động");
+        if (p.has_ipt) metas.push("IP tĩnh");
+        var feats = Array.isArray(p.features) ? p.features.slice(0, 3) : [];
+        var inCmp = state.cmpSet.has(String(p.id));
+        return '<div class="pkg-card">' +
+          '<button type="button" class="pkg-main" data-pkg="' + esc(p.id) + '">' +
+          '<span class="pkg-top"><span class="pkg-name">' + esc(p.name) + '</span>' +
+          '<span class="tag' + (p.grp === "dn" ? " dn" : "") + '">' + (p.grp === "dn" ? "Doanh nghiệp" : "Cá nhân") + "</span></span>" +
+          '<span class="pkg-price">' + fmtVND(p.price_m1) + " <small>/ tháng</small></span>" +
+          (metas.length ? '<span class="pkg-meta">' + metas.map(function (m) { return "<span>" + m + "</span>"; }).join("") + "</span>" : "") +
+          (feats.length ? '<ul class="pkg-feats">' + feats.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
+          (extra || "") +
+          "</button>" +
+          '<button type="button" class="cmp-toggle" data-cmp="' + esc(p.id) + '" aria-pressed="' + (inCmp ? "true" : "false") + '">' +
+          (inCmp ? "Đã chọn so sánh" : "+ So sánh") + "</button></div>";
+      }
+      /* Click chung: mở chi tiết (data-pkg) / bật tắt so sánh (data-cmp) */
+      document.addEventListener("click", function (e) {
+        var c = e.target.closest("[data-cmp]");
+        if (c) { toggleCmp(c.getAttribute("data-cmp")); return; }
+        var d = e.target.closest("[data-pkg]");
+        if (d) openPkgDetail(d.getAttribute("data-pkg"));
+      });
+      var toastTimer = null;
+      function toast(msg) {
+        var t = $("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2200);
+      }
+      function toggleCmp(id) {
+        id = String(id);
+        if (state.cmpSet.has(id)) state.cmpSet.delete(id);
+        else {
+          if (state.cmpSet.size >= 3) { toast("Chỉ so sánh tối đa 3 gói — bỏ chọn một gói trước"); return; }
+          state.cmpSet.add(id);
+        }
+        updateCmpBar();
+        if (state.packagesLoaded) renderPackages();
+        if (state.activeTab === "compare") renderCompare();
+        var wr = $("w-results");
+        if (wr && wr.innerHTML) { /* nút trong kết quả tư vấn tự cập nhật ở lần gợi ý sau */ }
+        syncCmpToggles();
+      }
+      function syncCmpToggles() {
+        var btns = document.querySelectorAll("[data-cmp]");
+        for (var i = 0; i < btns.length; i++) {
+          var on = state.cmpSet.has(String(btns[i].getAttribute("data-cmp")));
+          btns[i].setAttribute("aria-pressed", on ? "true" : "false");
+          btns[i].textContent = on ? "Đã chọn so sánh" : "+ So sánh";
+        }
+      }
+      function updateCmpBar() {
+        var bar = $("cmpBar");
+        if (!bar) return;
+        var show = state.cmpSet.size > 0 && state.activeTab !== "compare";
+        bar.classList.toggle("show", show);
+        $("cmpBarTxt").textContent = "Đã chọn " + state.cmpSet.size + "/3 gói";
+      }
+      $("cmpBarGo").addEventListener("click", function () { switchTab("compare"); });
+      $("cmpBarClear").addEventListener("click", function () {
+        state.cmpSet.clear();
+        updateCmpBar();
+        if (state.packagesLoaded) renderPackages();
+        if (state.activeTab === "compare") renderCompare();
+        else syncCmpToggles();
+      });
+      function speedTxt(p) {
+        if (p.speed_label) return p.speed_label;
+        if (p.speed_mbps) return p.speed_mbps >= 1000 ? (p.speed_mbps / 1000) + " Gbps" : p.speed_mbps + " Mbps";
+        return "—";
+      }
+      function renderCompare() {
+        var area = $("cmpArea");
+        var list = [];
+        state.cmpSet.forEach(function (id) { var p = findPkg(id); if (p) list.push(p); });
+        if (!list.length) {
+          area.innerHTML = '<div class="empty">Chưa chọn gói nào. Quay lại mục Gói cước hoặc Tư vấn và bấm “+ So sánh” ở các gói muốn đặt cạnh nhau.</div>';
+          return;
+        }
+        function row(label, fn) {
+          return "<tr><th>" + label + "</th>" + list.map(function (p) {
+            return "<td>" + fn(p) + "</td>";
+          }).join("") + "</tr>";
+        }
+        var html = '<div class="table-scroll"><table class="cmp-table">';
+        html += row("Gói", function (p) {
+          return '<div class="cmp-name">' + esc(p.name) + '</div><span class="tag' + (p.grp === "dn" ? " dn" : "") + '">' +
+            (p.grp === "dn" ? "Doanh nghiệp" : "Cá nhân") + "</span>";
+        });
+        html += row("Giá 1 tháng", function (p) {
+          return '<div class="cmp-price">' + fmtVND(p.price_m1) + " <small>/ tháng</small></div>";
+        });
+        html += row("Tốc độ", function (p) { return esc(speedTxt(p)); });
+        html += row("Wifi Mesh", function (p) {
+          return Number(p.mesh_packs) > 0 ? "Có — x" + p.mesh_packs : "Không";
+        });
+        html += row("Tính năng", function (p) {
+          var f = Array.isArray(p.features) ? p.features : [];
+          return f.length ? "<ul>" + f.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "—";
+        });
+        html += row("Ghi chú", function (p) { return p.note ? esc(p.note) : "—"; });
+        html += row("", function (p) {
+          return '<button type="button" class="btn ghost small" data-cmp="' + esc(p.id) + '">Bỏ khỏi so sánh</button>';
+        });
+        html += "</table></div>";
+        area.innerHTML = html;
+      }
+
+      /* ================= Tư vấn chọn gói ================= */
+      var HOUSEMESH = { cc50: 0, cc70: 1, cc150: 2, cc150p: 3, nd60: 1, nd100: 2, nd604: 2, bt: 3 };
+      var NEEDLBL = { tv: "Truyền hình MyTV", cam: "Camera", mesh: "Wifi Mesh", mob: "Di động cho gia đình", iptinh: "IP tĩnh" };
+      function needOk(nd, p) {
+        if (nd === "tv") return !!p.has_tv;
+        if (nd === "cam") return !!p.has_cam;
+        if (nd === "mesh") return Number(p.mesh_packs) > 0;
+        if (nd === "mob") return !!p.has_mob;
+        if (nd === "iptinh") return !!p.has_ipt;
+        return false;
+      }
+      var W = { group: "gd", budget: 250000, needs: {}, speed: 0, house: "cc50", budgetDn: 1000000, needsDn: {}, speedDn: 0 };
+      function wSingle(id, fn) {
+        var box = $(id);
+        var btns = box.querySelectorAll(".opt");
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].addEventListener("click", function () {
+            for (var j = 0; j < btns.length; j++) btns[j].setAttribute("aria-pressed", "false");
+            this.setAttribute("aria-pressed", "true");
+            fn(this.getAttribute("data-v"));
+          });
+        }
+      }
+      function wMulti(id, obj) {
+        var box = $(id);
+        var btns = box.querySelectorAll(".opt");
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].addEventListener("click", function () {
+            var on = this.getAttribute("aria-pressed") !== "true";
+            this.setAttribute("aria-pressed", on ? "true" : "false");
+            obj[this.getAttribute("data-v")] = on;
+          });
+        }
+      }
+      wSingle("w-group", function (v) {
+        W.group = v;
+        $("w-gd").hidden = v !== "gd";
+        $("w-dn").hidden = v !== "dn";
+      });
+      wSingle("w-budget", function (v) { W.budget = Number(v); });
+      wSingle("w-speed", function (v) { W.speed = Number(v); });
+      wSingle("w-house", function (v) { W.house = v; });
+      wSingle("w-budget-dn", function (v) { W.budgetDn = Number(v); });
+      wSingle("w-speed-dn", function (v) { W.speedDn = Number(v); });
+      wMulti("w-needs", W.needs);
+      wMulti("w-needs-dn", W.needsDn);
+      function runRecommend() {
+        var isGd = W.group === "gd";
+        var budget = isGd ? W.budget : W.budgetDn;
+        var needs = isGd ? W.needs : W.needsDn;
+        var wantSpeed = isGd ? W.speed : W.speedDn;
+        var pool = state.packages.filter(function (p) {
+          return p.grp === W.group && Number(p.speed_mbps || 0) > 0;
+        });
+        var cand = pool.map(function (p) {
+          var s = 0, ok = [], miss = [];
+          Object.keys(needs).forEach(function (nd) {
+            if (!needs[nd]) return;
+            if (needOk(nd, p)) { s += 10; ok.push(NEEDLBL[nd]); }
+            else { s += 0; miss.push(NEEDLBL[nd]); }
+          });
+          if (wantSpeed && Number(p.speed_mbps || 0) >= wantSpeed) s += 4;
+          if (budget && Number(p.price_m1) <= budget) s += 2;
+          return { p: p, s: s, ok: ok, miss: miss };
+        });
+        var relaxed = false;
+        if (budget) {
+          var inB = cand.filter(function (c) { return Number(c.p.price_m1) <= budget; });
+          if (inB.length) cand = inB; else relaxed = true;
+        }
+        cand.sort(function (a, b) { return b.s - a.s || (a.p.price_m1 || 0) - (b.p.price_m1 || 0); });
+        var top = cand.slice(0, 3);
+        var meshNeed = isGd ? (HOUSEMESH[W.house] || 0) : 0;
+        var html = '<p class="result-count" style="margin-top:16px">Gợi ý <b>' + top.length + "</b> gói phù hợp nhất" +
+          (relaxed ? " — <b>lưu ý:</b> không có gói trong ngân sách đã chọn, dưới đây là các gói gần nhất (vượt ngân sách)" : "") + "</p>";
+        if (top.length) {
+          html += '<div class="pkg-grid">' + top.map(function (c, i) {
+            var bits = [];
+            if (i === 0) bits.push("<b>Gợi ý số 1.</b>");
+            if (c.ok.length) bits.push("Đáp ứng: " + c.ok.join(", ") + ".");
+            if (c.miss.length) bits.push("Chưa có sẵn: " + c.miss.join(", ") + " (có thể mua add-on riêng).");
+            if (budget && Number(c.p.price_m1) <= budget) bits.push("Trong ngân sách, còn dư " + fmtVND(budget - Number(c.p.price_m1)) + "/tháng.");
+            if (isGd && meshNeed > 0) {
+              var have = Number(c.p.mesh_packs) || 0;
+              if (have >= meshNeed) bits.push("Số Mesh kèm theo (" + have + ") đủ khuyến nghị cho nhà khách (tối thiểu " + meshNeed + ").");
+              else bits.push("Nhà khách cần tối thiểu " + meshNeed + " Mesh — gói có " + have + ", nên thuê thêm " + (meshNeed - have) + " Mesh add-on (30.000đ/thiết bị/tháng) hoặc chọn bản có Mesh.");
+            }
+            return pkgCardHTML(c.p, '<p class="wreason">' + bits.join(" ") + "</p>");
+          }).join("") + "</div>";
+        } else {
+          html += '<div class="empty">Không có gói nào phù hợp. Thử nới ngân sách hoặc bỏ bớt nhu cầu.</div>';
+        }
+        if (isGd && needs.cam) html += '<p class="wreason">Mẹo: nếu khách chỉ cần thêm camera cho gói Internet sẵn có, tư vấn Pack 01 Cam 30.000đ/tháng hoặc Cloud Indoor từ 40.000đ/tháng ở mục Gói cước.</p>';
+        if (isGd && meshNeed >= 2) html += '<p class="wreason">Mẹo Mesh: Pack 2 Mesh thuê chung 50.000đ/tháng rẻ hơn thuê lẻ từng thiết bị (30.000đ/thiết bị/tháng) — xem bảng Pack Mesh ở tab Phí &amp; chính sách.</p>';
+        $("w-results").innerHTML = html;
+        $("w-results").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      $("w-go").addEventListener("click", function () {
+        if (!state.packagesLoaded) {
+          $("w-hint").textContent = "Đang tải dữ liệu gói cước…";
+          loadPackages(function () { $("w-hint").textContent = ""; runRecommend(); });
+          return;
+        }
+        runRecommend();
+      });
+
+      /* ================= Kênh MyTV ================= */
+      var chOnlyPkg = true;
+      function loadChannels() {
+        if (state.channelsLoaded) { renderChannels(); return; }
+        restSelect("channels", { order: { col: "name", asc: true } }).then(function (res) {
+          if (res.error) {
+            $("chList").innerHTML = '<div class="empty">Không tải được danh sách kênh. Vui lòng thử lại sau.</div>';
+            $("chCount").textContent = "";
+            return;
+          }
+          state.channels = res.data || [];
+          state.channelsLoaded = true;
+          buildChannelFilters();
+          renderChannels();
+        });
+      }
+      function buildChannelFilters() {
+        var cats = {}, pkgs = {};
+        state.channels.forEach(function (c) {
+          if (c.grp) cats[c.grp] = true;
+          (Array.isArray(c.pkgs) ? c.pkgs : []).forEach(function (x) { if (x) pkgs[x] = true; });
+        });
+        var catNames = Object.keys(cats).sort(function (a, b) { return a.localeCompare(b, "vi"); });
+        var pkgNames = Object.keys(pkgs).sort(function (a, b) { return a.localeCompare(b, "vi"); });
+        $("chCat").innerHTML = '<option value="">— Tất cả thể loại —</option>' +
+          catNames.map(function (x) { return "<option>" + esc(x) + "</option>"; }).join("");
+        $("chPkg").innerHTML = '<option value="">— Tất cả gói —</option>' +
+          pkgNames.map(function (x) { return "<option>" + esc(x) + "</option>"; }).join("");
+      }
+      function renderChannels() {
+        var q = stripAccents($("chQ").value.trim());
+        var pkg = $("chPkg").value, cat = $("chCat").value;
+        var list = state.channels.filter(function (c) {
+          if (cat && c.grp !== cat) return false;
+          if (q && stripAccents(c.name).indexOf(q) === -1) return false;
+          return true;
+        });
+        var inPkg = 0;
+        var rows = list.map(function (c) {
+          var arr = Array.isArray(c.pkgs) ? c.pkgs : [];
+          var has = pkg ? arr.indexOf(pkg) !== -1 : null;
+          if (has) inPkg++;
+          if (pkg && chOnlyPkg && !has) return "";
+          return '<div class="chrow' + (has === false ? " off" : "") + '"><div><div class="nm">' + esc(c.name) + '</div>' +
+            (c.grp ? '<div class="meta">' + esc(c.grp) + "</div>" : "") + '</div><div class="badges">' +
+            (pkg ? (has ? '<span class="tag yes">Có trong gói</span>' : '<span class="tag no">Không có</span>') : "") +
+            "</div></div>";
+        }).join("");
+        $("chList").innerHTML = rows || '<div class="empty">Không có kênh nào khớp điều kiện lọc.</div>';
+        $("chCount").innerHTML = pkg
+          ? "Gói <b>" + esc(pkg) + "</b> có <b>" + inPkg + "</b> kênh trong danh sách" + (chOnlyPkg ? " · đang chỉ hiện các kênh thuộc gói" : " · tổng " + list.length + " kênh đang hiển thị")
+          : "Tổng <b>" + list.length + "</b> kênh · chọn một gói MyTV để kiểm tra kênh thuộc gói";
+      }
+      $("chQ").addEventListener("input", renderChannels);
+      $("chPkg").addEventListener("change", renderChannels);
+      $("chCat").addEventListener("change", renderChannels);
+      $("chOnly").addEventListener("click", function () {
+        chOnlyPkg = !chOnlyPkg;
+        this.setAttribute("aria-pressed", chOnlyPkg ? "true" : "false");
+        renderChannels();
+      });
+
+      /* ================= Chuyển ngang XGSPON ================= */
+      var XGSPON = [{"name": "Home Net 4", "old": "250Mbps", "new": "1Gbps", "price": "219-259"}, {"name": "Home Net 6", "old": "500Mbps", "new": "1Gbps", "price": "499-599"}, {"name": "Home Net 7", "old": "300ULM", "new": "1Gbps", "price": "279-329"}, {"name": "Home Mesh 4", "old": "250Mbps", "new": "1Gbps", "price": "249-289"}, {"name": "Home Mesh 6", "old": "500Mbps", "new": "1Gbps", "price": "589-689"}, {"name": "Home Mesh 7", "old": "300ULM", "new": "1Gbps", "price": "299-349"}, {"name": "Home Net 4+", "old": "250Mbps", "new": "1Gbps", "price": "229-315"}, {"name": "Home Net 7+", "old": "300ULM", "new": "1Gbps", "price": "289-379"}, {"name": "Home Mesh 4+", "old": "250Mbps", "new": "1Gbps", "price": "259-349"}, {"name": "Home Mesh 7+", "old": "300ULM", "new": "1Gbps", "price": "309-399"}, {"name": "Home Chất 2", "old": "150Mbps", "new": "300Mbps", "price": "274"}, {"name": "Home Chất 4", "old": "200Mbps", "new": "500Mbps", "price": "284"}, {"name": "Home Chất 6", "old": "250Mbps", "new": "1Gbps", "price": "324"}, {"name": "Home Đỉnh", "old": "200Mbps", "new": "500Mbps", "price": "279"}, {"name": "Home Đỉnh 2", "old": "300Mbps", "new": "1Gbps", "price": "329-339"}, {"name": "Home Giải trí", "old": "200Mbps", "new": "500Mbps", "price": "309"}, {"name": "Home Giải trí 2", "old": "300Mbps", "new": "1Gbps", "price": "359-369"}, {"name": "Home Kết nối", "old": "200Mbps", "new": "500Mbps", "price": "299"}, {"name": "Home Kết nối 2", "old": "300Mbps", "new": "1Gbps", "price": "349-359"}, {"name": "Home Thể thao", "old": "200Mbps", "new": "500Mbps", "price": "393"}, {"name": "Home Thể thao 2", "old": "300Mbps", "new": "1Gbps", "price": "443-453"}, {"name": "Home Sành 2", "old": "150Mbps", "new": "300Mbps", "price": "239"}, {"name": "Home Sành 4", "old": "200Mbps", "new": "500Mbps", "price": "279"}, {"name": "Home Cam 2", "old": "150Mbps", "new": "300Mbps", "price": "220-260"}, {"name": "Home Safe", "old": "150Mbps", "new": "300Mbps", "price": "249-279"}, {"name": "HomeTV Safe", "old": "150Mbps", "new": "300Mbps", "price": "269-299"}, {"name": "Home Big 1", "old": "100Mbps", "new": "200Mbps", "price": "235-255"}, {"name": "Home Big 2", "old": "150Mbps", "new": "300Mbps", "price": "250-310"}, {"name": "HomeTV VIP", "old": "250Mbps", "new": "1Gbps", "price": "369-389"}, {"name": "HomeTV Super Safe", "old": "150Mbps", "new": "300Mbps", "price": "309-339"}, {"name": "Home Tiết kiệm", "old": "150Mbps", "new": "300Mbps", "price": "239"}, {"name": "Home Game", "old": "150Mbps", "new": "300Mbps", "price": "299"}, {"name": "Home Net", "old": "350Mbps", "new": "1Gbps", "price": "600-800"}, {"name": "Home 3 Super", "old": "150Mbps", "new": "300Mbps", "price": "220-245"}, {"name": "Home 4 Super", "old": "250Mbps", "new": "1Gbps", "price": "230-279"}, {"name": "Home 5 Super", "old": "300Mbps", "new": "1Gbps", "price": "290-349"}, {"name": "Home Motel", "old": "300Mbps", "new": "1Gbps", "price": "350"}, {"name": "Home Motel up", "old": "150Mbps", "new": "300Mbps", "price": "200"}, {"name": "HomeTV Motel", "old": "150Mbps", "new": "300Mbps", "price": "210"}, {"name": "Home Mobile", "old": "150Mbps", "new": "300Mbps", "price": "235"}, {"name": "Home Game 2 (Có Mesh)", "old": "250Mbps", "new": "1Gbps", "price": "359"}, {"name": "Home Game 2 (Không Mesh)", "old": "250Mbps", "new": "1Gbps", "price": "349"}, {"name": "HOME 2", "old": "", "new": "300Mbps", "price": "210-250"}, {"name": "HOME 3", "old": "", "new": "500Mbps", "price": "265-3000"}, {"name": "HOME 4", "old": "", "new": "400ULM", "price": "285-335"}, {"name": "HOMETV 1", "old": "", "new": "200Mbps", "price": "195"}, {"name": "HOMETV 2", "old": "", "new": "300Mbps", "price": "235-265"}, {"name": "HOMETV 3", "old": "", "new": "500Mbps", "price": "295-330"}, {"name": "HOMETV 4", "old": "", "new": "400ULM", "price": "315-365"}, {"name": "HOME CAM 2", "old": "", "new": "300Mbps", "price": "250-290"}, {"name": "HOME CAM 3", "old": "", "new": "500Mbps", "price": "305-340"}, {"name": "HOME CAM 4", "old": "", "new": "400ULM", "price": "325-375"}, {"name": "HOME SÀNH 2", "old": "", "new": "300Mbps", "price": "239"}, {"name": "HOME SÀNH 4", "old": "", "new": "500Mbps", "price": "329"}, {"name": "HOME ĐỈNH 2", "old": "", "new": "400ULM", "price": "339"}, {"name": "HOME ĐỈNH 3", "old": "", "new": "400ULM", "price": "469"}];
+      function renderXg() {
+        var q = stripAccents($("xgQ").value.trim());
+        var list = XGSPON.filter(function (x) { return !q || stripAccents(x.name).indexOf(q) !== -1; });
+        var html = '<table class="plain" style="min-width:480px"><tr><th>Tên gói</th><th>Tốc độ cũ</th><th>Tốc độ mới</th><th>Giá gói (nghìn đ/tháng)</th></tr>';
+        html += list.length ? list.map(function (x) {
+          return "<tr><td><b>" + esc(x.name) + "</b></td><td>" + esc(x.old || "—") + "</td><td>" + esc(x.new) + "</td><td>" + esc(x.price) + "</td></tr>";
+        }).join("") : '<tr><td colspan="4">Không tìm thấy gói.</td></tr>';
+        html += "</table>";
+        $("xgTable").innerHTML = html;
+      }
+      $("xgQ").addEventListener("input", renderXg);
+
       /* ================= KPI ================= */
+      /* ================= KPI: khung + thanh tiến độ ================= */
+      function kpiCurMonth() {
+        var d = new Date();
+        return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2);
+      }
+      function kpiMonthLabel(ym) {
+        var p = String(ym || "").split("-");
+        return p.length === 2 ? "tháng " + Number(p[1]) + "/" + p[0] : String(ym || "");
+      }
+      function kpiWeight(w) {
+        if (w == null || w === "") return 0;
+        var n = Number(String(w).replace("%", "").trim());
+        if (isNaN(n) || n <= 0) return 0;
+        return n > 1 ? n / 100 : n;
+      }
+      function fmtNum(n) {
+        if (n == null || n === "" || isNaN(Number(n))) return "—";
+        return Number(n).toLocaleString("vi-VN", { maximumFractionDigits: 2 });
+      }
+      function pgPct(target, actual) {
+        var t = Number(target), a = Number(actual);
+        if (!(t > 0) || isNaN(a)) return null;
+        return (a / t) * 100;
+      }
+      function pgBarHtml(pct, labelHtml) {
+        var w = Math.max(0, Math.min(100, pct));
+        var cls = pct >= 100 ? "pgbar done" : "pgbar";
+        return '<div class="pgrow"><div class="' + cls + '"><i style="width:' + w.toFixed(1) + '%"></i></div>' +
+          '<div class="pgline"><span>' + labelHtml + '</span><b>' + pct.toFixed(1).replace(".", ",") + "%</b></div></div>";
+      }
       function loadKpi() {
-        if (state.kpiLoaded) { renderKpi(); return; }
+        if (state.kpiLoaded) { loadKpiProgress().then(renderKpi); return; }
         var kpiOpts = { order: { col: "position", asc: true } };
         if (state.profile.role !== "admin" && state.profile.position) {
           kpiOpts.filters = [{ col: "position", val: state.profile.position }];
@@ -1214,14 +2119,45 @@
           state.kpiLoaded = true;
           if (state.profile.role === "admin") {
             $("kpiAdminWrap").hidden = false;
+            $("kpiModeWrap").hidden = false;
             var sel = $("kpiSel");
             sel.innerHTML = state.kpiFrames.map(function (f, i) {
               return '<option value="' + i + '">' + esc(f.position) + " — " + esc(f.month_label || "") + "</option>";
             }).join("");
-            sel.onchange = renderKpi;
+            sel.onchange = function () { state.kpiStaffId = ""; renderKpi(); };
+            $("kpiModeAgg").onclick = function () { state.kpiAdminMode = "agg"; syncKpiMode(); renderKpi(); };
+            $("kpiModePerson").onclick = function () { state.kpiAdminMode = "person"; syncKpiMode(); renderKpi(); };
+            $("kpiStaffSel").onchange = function () { state.kpiStaffId = this.value; renderKpi(); };
+            syncKpiMode();
           }
-          renderKpi();
+          loadKpiProgress().then(renderKpi);
         });
+      }
+      function syncKpiMode() {
+        $("kpiModeAgg").classList.toggle("on", state.kpiAdminMode === "agg");
+        $("kpiModePerson").classList.toggle("on", state.kpiAdminMode === "person");
+        $("kpiStaffWrap").hidden = state.kpiAdminMode !== "person";
+      }
+      function loadKpiProgress() {
+        var m = kpiCurMonth();
+        var opts = { filters: [{ col: "month", val: m }] };
+        if (state.profile.role !== "admin") {
+          opts.filters.push({ col: "profile_id", val: state.user.id });
+        }
+        var p1 = restSelect("kpi_progress", opts).then(function (res) {
+          state.kpiProg = {};
+          (res.data || []).forEach(function (r) {
+            state.kpiProg[r.profile_id + "|" + r.indicator_idx] = r;
+          });
+        });
+        var p2 = Promise.resolve();
+        if (state.profile.role === "admin" && !state.kpiProfiles.length) {
+          p2 = restSelect("profiles", {
+            select: "id,hrm_code,full_name,position,role",
+            order: { col: "full_name", asc: true }
+          }).then(function (res) { state.kpiProfiles = res.data || []; });
+        }
+        return Promise.all([p1, p2]);
       }
       function fmtKpiTime(iso) {
         if (!iso) return "";
@@ -1236,39 +2172,138 @@
           return m.hour + ":" + m.minute + " " + m.day + "/" + m.month + "/" + m.year;
         } catch (e) { return ""; }
       }
+      function kpiProgOf(profileId, idx) {
+        return state.kpiProg[profileId + "|" + idx];
+      }
+      /* Giao diện tiến độ của 1 người (nhân viên tự xem / admin xem hộ) */
+      function renderKpiPerson(frame, profileId, viewName) {
+        var mLabel = kpiMonthLabel(kpiCurMonth());
+        $("kpiSub").textContent = (frame.month_label || "Khung KPI") + " · " + (frame.position || "") +
+          " · Tiến độ " + mLabel + (viewName ? " · " + viewName : "");
+        var rows = Array.isArray(frame.rows) ? frame.rows : [];
+        var html = "";
+        /* Thanh tổng: trung bình trọng số, chỉ tính chỉ tiêu đã có số liệu */
+        var wSum = 0, wVal = 0, nData = 0;
+        rows.forEach(function (r, i) {
+          var p = kpiProgOf(profileId, i + 1);
+          var pct = p ? pgPct(p.target, p.actual) : null;
+          var w = kpiWeight(r.trong_so);
+          if (pct != null && w > 0) { wSum += w; wVal += w * pct; nData++; }
+        });
+        if (nData > 0) {
+          var total = wVal / wSum;
+          html += '<div class="card pg-total"><div class="pghead"><span>Tiến độ tổng ' + mLabel + '</span>' +
+            "<span>" + total.toFixed(1).replace(".", ",") + "%</span></div>" +
+            '<div class="' + (total >= 100 ? "pgbar done" : "pgbar") + '"><i style="width:' +
+            Math.max(0, Math.min(100, total)).toFixed(1) + '%"></i></div>' +
+            '<p class="pg-note">Trung bình trọng số theo ' + nData + "/" + rows.length + " chỉ tiêu đã có số liệu.</p></div>";
+        }
+        html += '<div class="card" style="padding:6px 10px"><table class="kpi-table"><thead><tr>' +
+          "<th class=\"num\" style=\"text-align:left;width:36px\">STT</th><th>Chỉ tiêu</th><th>Dịch vụ</th>" +
+          "<th class=\"num\">Trọng số</th><th>Tham chiếu</th></tr></thead><tbody>";
+        if (!rows.length) {
+          html += '<tr><td colspan="5" style="text-align:center;color:var(--muted)">Khung KPI chưa có chỉ tiêu.</td></tr>';
+        }
+        rows.forEach(function (r, i) {
+          var idx = i + 1;
+          var w = r.trong_so;
+          var wTxt = (w == null || w === "") ? "—" : (isNaN(Number(String(w).replace("%", ""))) ? esc(w) : (kpiWeight(w) > 0 ? Math.round(kpiWeight(w) * 100) + "%" : esc(w)));
+          html += "<tr><td class=\"stt\">" + idx + "</td><td class=\"ci\">" + esc(r.chi_tieu) + "</td><td class=\"dv\">" + esc(r.dich_vu || "—") +
+            "</td><td class=\"num\">" + wTxt + "</td><td class=\"ref\">" + esc(r.tham_chieu || "—") + "</td></tr>";
+          var p = kpiProgOf(profileId, idx);
+          var pct = p ? pgPct(p.target, p.actual) : null;
+          html += '<tr><td class="pg" colspan="5">';
+          if (pct == null) {
+            html += '<p class="pgempty">Chưa cập nhật tiến độ chỉ tiêu ' + idx + ".</p>";
+          } else {
+            html += pgBarHtml(pct, "Thực hiện " + fmtNum(p.actual) + " / Kế hoạch " + fmtNum(p.target));
+          }
+          html += "</td></tr>";
+        });
+        html += "</tbody></table></div>";
+        var t = fmtKpiTime(frame.updated_at);
+        if (t) html += '<p class="kpi-foot">Khung cập nhật vào lúc ' + t + "</p>";
+        $("kpiBody").innerHTML = html;
+      }
+      /* Admin: bảng tổng hợp theo khung */
+      function renderKpiAgg(frame) {
+        var mLabel = kpiMonthLabel(kpiCurMonth());
+        $("kpiSub").textContent = (frame.month_label || "Khung KPI") + " · " + (frame.position || "") +
+          " · Tổng hợp " + mLabel;
+        var rows = Array.isArray(frame.rows) ? frame.rows : [];
+        var staff = state.kpiProfiles.filter(function (p) {
+          return p.position === frame.position && p.role !== "admin";
+        });
+        var html = '<p class="pg-note">Đơn vị: ' + esc(frame.position || "") + " — " + staff.length + " nhân viên.</p>";
+        html += '<div class="card" style="padding:6px 10px"><div class="table-scroll"><table class="kpi-table"><thead><tr>' +
+          "<th class=\"num\" style=\"text-align:left;width:36px\">STT</th><th>Chỉ tiêu</th>" +
+          "<th class=\"num\">Σ thực hiện</th><th class=\"num\">Σ kế hoạch</th><th style=\"min-width:150px\">Tiến độ</th>" +
+          "</tr></thead><tbody>";
+        var wSum = 0, wVal = 0, nData = 0;
+        rows.forEach(function (r, i) {
+          var idx = i + 1, sumA = 0, sumT = 0, nP = 0;
+          staff.forEach(function (s) {
+            var p = kpiProgOf(s.id, idx);
+            if (p && Number(p.target) > 0) {
+              sumT += Number(p.target);
+              sumA += isNaN(Number(p.actual)) ? 0 : Number(p.actual);
+              nP++;
+            }
+          });
+          var pct = sumT > 0 ? (sumA / sumT) * 100 : null;
+          var w = kpiWeight(r.trong_so);
+          if (pct != null && w > 0) { wSum += w; wVal += w * pct; nData++; }
+          html += "<tr><td class=\"stt\">" + idx + "</td><td class=\"ci\">" + esc(r.chi_tieu) + "</td>" +
+            '<td class="sum sum-a">' + fmtNum(sumA) + (nP ? ' <span style="color:var(--muted);font-weight:400">(' + nP + " người)</span>" : "") + "</td>" +
+            '<td class="sum sum-t">' + (sumT > 0 ? fmtNum(sumT) : "—") + "</td>" +
+            '<td class="sum-p">' + (pct == null ? '<span class="pgempty">Chưa có số liệu</span>' :
+              '<div class="' + (pct >= 100 ? "pgbar done" : "pgbar") + '" style="margin-top:2px"><i style="width:' +
+              Math.max(0, Math.min(100, pct)).toFixed(1) + '%"></i></div><b>' + pct.toFixed(1).replace(".", ",") + "%</b>") + "</td></tr>";
+        });
+        if (nData > 0) {
+          var total = wVal / wSum;
+          html += '<tr><td class="stt">∑</td><td class="ci">Tổng trọng số đơn vị</td><td class="sum sum-a" colspan="2">' +
+            nData + "/" + rows.length + " chỉ tiêu có số liệu</td>" +
+            '<td class="sum-p"><div class="' + (total >= 100 ? "pgbar done" : "pgbar") + '" style="margin-top:2px"><i style="width:' +
+            Math.max(0, Math.min(100, total)).toFixed(1) + '%"></i></div><b>' + total.toFixed(1).replace(".", ",") + "%</b></td></tr>";
+        }
+        html += "</tbody></table></div></div>";
+        $("kpiBody").innerHTML = html;
+      }
       function renderKpi() {
         var frames = state.kpiFrames;
         if (!frames.length) {
           $("kpiBody").innerHTML = '<div class="empty">Chưa có khung KPI cho chức danh của bạn. Vui lòng liên hệ quản trị viên.</div>';
           return;
         }
-        var frame;
         if (state.profile.role === "admin") {
-          frame = frames[Number($("kpiSel").value || 0)] || frames[0];
-        } else {
-          frame = frames[0];
-          for (var i = 0; i < frames.length; i++) {
-            if (frames[i].position === state.profile.position) { frame = frames[i]; break; }
+          var frame = frames[Number($("kpiSel").value || 0)] || frames[0];
+          if (state.kpiAdminMode === "person") {
+            var staff = state.kpiProfiles.filter(function (p) { return p.position === frame.position; });
+            var sel = $("kpiStaffSel");
+            sel.innerHTML = '<option value="">— Chọn nhân viên —</option>' + staff.map(function (s) {
+              return '<option value="' + s.id + '"' + (s.id === state.kpiStaffId ? " selected" : "") + ">" +
+                esc(s.full_name) + " (" + esc(s.hrm_code) + ")</option>";
+            }).join("");
+            if (!state.kpiStaffId) {
+              $("kpiSub").textContent = (frame.month_label || "Khung KPI") + " · " + (frame.position || "");
+              $("kpiBody").innerHTML = '<div class="empty">Hãy chọn nhân viên để xem tiến độ.</div>';
+              return;
+            }
+            var who = null;
+            staff.forEach(function (s) { if (s.id === state.kpiStaffId) who = s; });
+            if (!who) { state.kpiStaffId = ""; renderKpi(); return; }
+            renderKpiPerson(frame, who.id, who.full_name + " (" + who.hrm_code + ")");
+          } else {
+            renderKpiAgg(frame);
           }
+        } else {
+          var fr = frames[0];
+          for (var i = 0; i < frames.length; i++) {
+            if (frames[i].position === state.profile.position) { fr = frames[i]; break; }
+          }
+          renderKpiPerson(fr, state.user.id, "");
         }
-        $("kpiSub").textContent = (frame.month_label || "Khung KPI") + " · " + (frame.position || "");
-        var rows = Array.isArray(frame.rows) ? frame.rows : [];
-        var html = '<div class="card" style="padding:6px 10px"><table class="kpi-table"><thead><tr>' +
-          "<th>Chỉ tiêu</th><th>Dịch vụ</th><th class=\"num\">Trọng số</th><th>Tham chiếu</th>" +
-          "</tr></thead><tbody>";
-        if (!rows.length) {
-          html += '<tr><td colspan="4" style="text-align:center;color:var(--muted)">Khung KPI chưa có chỉ tiêu.</td></tr>';
-        }
-        html += rows.map(function (r) {
-          var w = r.trong_so;
-          var wTxt = (w == null || w === "") ? "—" : (isNaN(Number(w)) ? esc(w) : (Number(w) <= 1 ? Math.round(Number(w) * 100) + "%" : esc(w)));
-          return "<tr><td class=\"ci\">" + esc(r.chi_tieu) + "</td><td class=\"dv\">" + esc(r.dich_vu || "—") +
-            "</td><td class=\"num\">" + wTxt + "</td><td class=\"ref\">" + esc(r.tham_chieu || "—") + "</td></tr>";
-        }).join("");
-        html += "</tbody></table></div>";
-        var t = fmtKpiTime(frame.updated_at);
-        if (t) html += '<p class="kpi-foot">Cập nhật vào lúc ' + t + "</p>";
-        $("kpiBody").innerHTML = html;
       }
 
       /* ================= Salaries ================= */
