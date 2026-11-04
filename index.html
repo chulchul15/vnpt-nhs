@@ -143,13 +143,13 @@
       .brand-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
       .brand-name { font-weight: 800; color: var(--blue-deep); font-size: 17px; white-space: nowrap; }
       .brand-sub { font-size: 11px; font-weight: 500; color: var(--muted); }
-      .topnav { display: none; gap: 4px; margin-left: 10px; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+      .topnav { display: none; gap: 4px; margin-left: 10px; overflow-x: auto; max-width: 100%; scrollbar-width: none; scroll-behavior: smooth; }
       .topnav button, .bottomnav button {
         border: 0; background: transparent; color: var(--muted);
         font-weight: 600; font-size: 14px;
         display: inline-flex; align-items: center; gap: 7px;
       }
-      .topnav button { padding: 8px 13px; border-radius: 9px; flex: none; white-space: nowrap; }
+      .topnav button { padding: 11px 16px; border-radius: 10px; flex: none; white-space: nowrap; scroll-margin: 0 12px; }
       .topnav button.active { background: var(--blue-soft); color: var(--blue-deep); }
       .topnav button:hover { color: var(--blue-deep); }
       .userbox { margin-left: auto; display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -1562,6 +1562,10 @@
         for (var i = 0; i < pages.length; i++) pages[i].classList.toggle("active", pages[i].id === "page-" + id);
         var btns = document.querySelectorAll("[data-tab]");
         for (var j = 0; j < btns.length; j++) btns[j].classList.toggle("active", btns[j].getAttribute("data-tab") === id);
+        try {
+          var actBtns = document.querySelectorAll('.topnav button.active, .bottomnav button.active');
+          for (var k = 0; k < actBtns.length; k++) actBtns[k].scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        } catch (e) {}
         if (id === "packages") loadPackages();
         if (id === "advise") loadPackages();
         if (id === "compare") renderCompare();
